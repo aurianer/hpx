@@ -1,3 +1,4 @@
+# Copyright (c) 2018 Christopher Hinz
 # Copyright (c) 2014 Thomas Heller
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -29,10 +30,22 @@ set(Boost_ADDITIONAL_VERSIONS
     "1.57.0" "1.57")
 set(Boost_MINIMUM_VERSION "1.61" CACHE  INTERNAL "1.61" FORCE)
 
-set(__boost_libraries)
+set(__boost_libraries program_options system)
 if(HPX_PARCELPORT_VERBS_WITH_LOGGING OR HPX_PARCELPORT_VERBS_WITH_DEV_MODE OR
    HPX_PARCELPORT_LIBFABRIC_WITH_LOGGING OR HPX_PARCELPORT_LIBFABRIC_WITH_DEV_MODE)
   set(__boost_libraries ${__boost_libraries} log log_setup date_time chrono thread)
+endif()
+
+if(HPX_WITH_THREAD_COMPATIBILITY OR NOT(HPX_WITH_CXX11_THREAD))
+  set(__boost_libraries ${__boost_libraries} thread chrono)
+endif()
+
+if(HPX_WITH_TOOLS)
+  set(__boost_libraries ${__boost_libraries} regex)
+endif()
+
+if(HPX_WITH_COMPRESSION_BZIP2 OR HPX_WITH_COMPRESSION_ZLIB)
+  set(__boost_libraries ${__boost_libraries} iostreams)
 endif()
 
 # Set configuration option to use Boost.Context or not. This depends on the
@@ -55,14 +68,11 @@ if(NOT HPX_WITH_NATIVE_TLS)
 endif()
 
 if(HPX_WITH_GENERIC_CONTEXT_COROUTINES)
-  set(__boost_libraries ${__boost_libraries} context)
   # if context is needed, we should still link with boost thread and chrono
-  set(__boost_libraries ${__boost_libraries} thread chrono)
+  set(__boost_libraries ${__boost_libraries} context thread chrono)
 endif()
 
-set(__boost_libraries
-  ${__boost_libraries}
-  system)
+list(REMOVE_DUPLICATES __boost_libraries)
 
 set(Boost_NO_BOOST_CMAKE ON) # disable the search for boost-cmake
 find_package(Boost ${Boost_MINIMUM_VERSION}
@@ -73,16 +83,12 @@ if(NOT Boost_FOUND)
   hpx_error("Could not find Boost. Please set BOOST_ROOT to point to your Boost installation.")
 endif()
 
-set(Boost_TMP_LIBRARIES ${Boost_LIBRARIES})
-if(UNIX AND NOT CYGWIN)
-  find_library(BOOST_UNDERLYING_THREAD_LIBRARY NAMES pthread DOC "The threading library used by boost.thread")
-  if(NOT BOOST_UNDERLYING_THREAD_LIBRARY AND (HPX_PLATFORM_UC STREQUAL "XEONPHI"))
-    set(BOOST_UNDERLYING_THREAD_LIBRARY "-pthread")
-  endif()
-  set(Boost_TMP_LIBRARIES ${Boost_TMP_LIBRARIES} ${BOOST_UNDERLYING_THREAD_LIBRARY})
-endif()
+add_library(hpx::boost INTERFACE IMPORTED)
+target_include_directories(hpx::boost INTERFACE ${Boost_INCLUDE_DIRS})
+target_link_libraries(hpx::boost INTERFACE ${Boost_LIBRARIES})
 
-set(Boost_TMP_LIBRARIES ${Boost_TMP_LIBRARIES} ${Boost_LIBRARIES})
+find_package(Threads REQUIRED)
+target_link_libraries(hpx::boost INTERFACE Threads::Threads)
 
 if(NOT HPX_WITH_CXX17_FILESYSTEM)
   find_package(Boost ${Boost_MINIMUM_VERSION}
@@ -103,26 +109,15 @@ if(HPX_WITH_COMPRESSION_BZIP2 OR HPX_WITH_COMPRESSION_ZLIB)
   else()
     hpx_error("Could not find Boost.Iostreams but HPX_WITH_COMPRESSION_BZIP2=On or HPX_WITH_COMPRESSION_LIB=On. Either set it to off or provide a boost installation including the iostreams library")
   endif()
-  set(Boost_TMP_LIBRARIES ${Boost_TMP_LIBRARIES} ${Boost_LIBRARIES})
+  target_link_libraries(hpx::boost INTERFACE iostreams)
 endif()
 
-if(HPX_WITH_TOOLS)
-  find_package(Boost 1.61 QUIET MODULE COMPONENTS regex)
-  if(Boost_REGEX_FOUND)
-    hpx_info("  regex")
-  else()
-    hpx_error("Could not find Boost.Regex but HPX_WITH_TOOLS=On (the inspect tool requires Boost.Regex). Either set it to off or provide a boost installation including the regex library")
-  endif()
-  set(Boost_TMP_LIBRARIES ${Boost_TMP_LIBRARIES} ${Boost_LIBRARIES})
-endif()
-
-set(Boost_LIBRARIES ${Boost_TMP_LIBRARIES})
 
 # If we compile natively for the MIC, we need some workarounds for certain
 # Boost headers
 # FIXME: push changes upstream
 if(HPX_PLATFORM_UC STREQUAL "XEONPHI")
-  set(Boost_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/external/asio ${Boost_INCLUDE_DIRS})
+  target_include_directories(hpx::boost BEFORE INTERFACE ${PROJECT_SOURCE_DIR}/external/asio)
 endif()
 
 # Boost preprocessor definitions
@@ -134,7 +129,4 @@ if(NOT MSVC)
   hpx_add_config_define(HPX_COROUTINE_NO_SEPARATE_CALL_SITES)
 endif()
 hpx_add_config_cond_define(BOOST_BIGINT_HAS_NATIVE_INT64)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-add_definitions(-DBOOST_ALL_NO_LIB) # disable auto-linking
-hpx_libraries(${Boost_LIBRARIES})
+target_compile_definitions(hpx::boost INTERFACE BOOST_ALL_NO_LIB) # disable auto-linking

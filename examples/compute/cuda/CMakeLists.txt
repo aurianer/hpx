@@ -27,10 +27,7 @@ if(HPX_WITH_CUDA)
     set(partitioned_vector_PARAMETERS THREADS_PER_LOCALITY 4)
   endif()
 
-  include_directories(${CUDA_INCLUDE_DIRS})
-
-  set(cublas_matmul_FLAGS
-      DEPENDENCIES ${CUDA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES})
+  set(cublas_matmul_LIBRARIES ${CUDA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES})
 
   set(cublas_matmul_CUDA OFF)
   set(data_copy_CUDA ON)
@@ -63,6 +60,8 @@ foreach(example_program ${example_programs})
                      ${${example_program}_FLAGS}
                      FOLDER "Examples/Compute/CUDA")
 
+  target_include_directories(${example_program} PRIVATE ${CUDA_INCLUDE_DIRS})
+  target_link_libraries(${example_program} PRIVATE ${${example_program}_LIBRARIES})
   add_hpx_example_target_dependencies("compute.cuda" ${example_program})
 
   if(HPX_WITH_TESTS AND HPX_WITH_TESTS_EXAMPLES)

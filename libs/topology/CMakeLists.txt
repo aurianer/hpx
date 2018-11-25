@@ -34,7 +34,7 @@ add_hpx_module(topology
     SOURCES ${topology_sources}
     HEADERS ${topology_headers}
     COMPAT_HEADERS ${topology_compat_headers}
-    DEPENDENCIES hpx_config hpx_concurrency hpx_errors
+    DEPENDENCIES hpx_config hpx_concurrency hpx_errors hpx::hwloc
     CMAKE_SUBDIRS examples tests
 )
 

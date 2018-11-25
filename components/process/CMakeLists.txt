@@ -117,6 +117,8 @@ add_hpx_component(process
 target_compile_definitions(process_component
   PRIVATE HPX_PROCESS_EXPORTS)
 
+target_link_libraries(process_component PRIVATE hpx::boost)
+
 add_hpx_pseudo_dependencies(components.process process_component)
 
 add_subdirectory(tests)
