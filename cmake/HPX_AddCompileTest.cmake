@@ -128,6 +128,7 @@ function(add_hpx_header_tests category)
         COMPONENT_DEPENDENCIES ${${category}_COMPONENT_DEPENDENCIES}
         DEPENDENCIES ${${category}_DEPENDENCIES}
         ${_additional_flags})
+
     endif()
   endforeach()
 
