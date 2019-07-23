@@ -292,11 +292,8 @@ endif()
 
 if (TARGET hpx::apex)
   target_link_libraries(hpx PRIVATE hpx::apex)
-<<<<<<< HEAD
-=======
   get_target_property(_apex_inc_dir hpx::apex INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
   target_include_directories(hpx INTERFACE ${_apex_inc_dir})
->>>>>>> ede2e20678c... fixup! Replace 'include_directories' with 'target_include_directories'
 endif()
 
 if (TARGET hpx::gperftools)
