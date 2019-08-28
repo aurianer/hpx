@@ -1618,6 +1618,10 @@ include(HPX_SetupPapi)
 include(HPX_SetupHpxmp)
 include(HPX_SetupGooglePerfTools)
 include(HPX_SetupValgrind)
+# Setup plugins
+# (set here cause if we include it inside plugins, it will not be defined in
+# src/CMakeLists.txt where we call add_static_parcelports)
+include(HPX_SetupMPI)
 
 if(HPX_WITH_SANITIZERS)
   hpx_add_config_define(HPX_HAVE_SANITIZERS)
