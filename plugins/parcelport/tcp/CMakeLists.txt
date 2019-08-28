@@ -6,11 +6,10 @@
 
 include(HPX_AddLibrary)
 
-if(HPX_WITH_PARCELPORT_TCP)
-  macro(add_parcelport_tcp_module)
+macro(add_parcelport_tcp_module)
+  if(HPX_WITH_PARCELPORT_TCP)
     hpx_debug("add_parcelport_tcp_module")
-    add_parcelport(
-        tcp
+    add_parcelport(tcp
         STATIC
         SOURCES "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/connection_handler_tcp.cpp"
                 "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/parcelport_tcp.cpp"
@@ -21,8 +20,5 @@ if(HPX_WITH_PARCELPORT_TCP)
               "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/sender.hpp"
         FOLDER "Core/Plugins/Parcelport/Tcp"
         )
-  endmacro()
-else()
-  macro(add_parcelport_tcp_module)
-  endmacro()
-endif()
+  endif()
+endmacro()
