@@ -8,17 +8,37 @@ include(HPX_AddLibrary)
 
 macro(add_parcelport_tcp_module)
   if(HPX_WITH_PARCELPORT_TCP)
+    if (TARGET hpx::apex)
+      set(apex_dep hpx::apex)
+    endif()
     hpx_debug("add_parcelport_tcp_module")
+    include(HPX_AddParcelport)
     add_parcelport(tcp
-        STATIC
-        SOURCES "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/connection_handler_tcp.cpp"
-                "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/parcelport_tcp.cpp"
-        HEADERS
-              "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/connection_handler.hpp"
-              "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/locality.hpp"
-              "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/receiver.hpp"
-              "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/sender.hpp"
-        FOLDER "Core/Plugins/Parcelport/Tcp"
-        )
+      STATIC
+      SOURCES
+        "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/connection_handler_tcp.cpp"
+        "${PROJECT_SOURCE_DIR}/plugins/parcelport/tcp/parcelport_tcp.cpp"
+      HEADERS
+        "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/connection_handler.hpp"
+        "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/locality.hpp"
+        "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/receiver.hpp"
+        "${PROJECT_SOURCE_DIR}/hpx/plugins/parcelport/tcp/sender.hpp"
+      DEPENDENCIES
+        hpx_config
+        hpx_allocator_support
+        hpx_assertion
+        hpx_cache
+        hpx_concurrency
+        hpx_errors
+        hpx_functional
+        hpx_parallel_executors
+        hpx_timing
+        hpx_topology
+        ${apex_dep}
+      INCLUDE_DIRS
+        "${PROJECT_SOURCE_DIR}"
+      FOLDER
+        "Core/Plugins/Parcelport/Tcp"
+      )
   endif()
 endmacro()
