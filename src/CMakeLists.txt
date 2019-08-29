@@ -288,7 +288,9 @@ endif()
 
 if (TARGET hpx::apex)
   target_link_libraries(hpx PRIVATE hpx::apex)
-  get_target_property(_apex_inc_dir hpx::apex INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+  # System has been removed when passing at set_property for cmake < 3.11
+  # instead of target_include_directories
+  get_target_property(_apex_inc_dir hpx::apex INTERFACE_INCLUDE_DIRECTORIES)
   target_include_directories(hpx INTERFACE ${_apex_inc_dir})
 endif()
 
