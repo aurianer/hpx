@@ -33,7 +33,8 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
       hpx_error(${allocator_error})
     endif()
 
-    target_link_libraries(hpx::allocator INTERFACE ${TCMALLOC_LIBRARIES})
+    set_property(TARGET hpx::allocator PROPERTY
+      INTERFACE_LINK_LIBRARIES ${TCMALLOC_LIBRARIES})
 
     if(MSVC)
       hpx_add_link_flag_if_available(/INCLUDE:__tcmalloc)
@@ -46,9 +47,11 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
     if(NOT JEMALLOC_LIBRARIES)
       hpx_error(${allocator_error})
     endif()
-    target_include_directories(hpx::allocator INTERFACE ${JEMALLOC_INCLUDE_DIR}
+    set_property(TARGET hpx::allocator PROPERTY
+      INTERFACE_INCLUDE_DIRECTORIES ${JEMALLOC_INCLUDE_DIR}
       ${JEMALLOC_ADDITIONAL_INCLUDE_DIR})
-    target_link_libraries(hpx::allocator INTERFACE ${JEMALLOC_LIBRARIES})
+    set_property(TARGET hpx::allocator PROPERTY
+      INTERFACE_LINK_LIBRARIES ${JEMALLOC_LIBRARIES})
   endif()
 
   if("${HPX_WITH_MALLOC_UPPER}" STREQUAL "TBBMALLOC")
@@ -59,7 +62,8 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
     if(MSVC)
       hpx_add_link_flag_if_available(/INCLUDE:__TBB_malloc_proxy)
     endif()
-    target_link_libraries(hpx::allocator INTERFACE ${TBBMALLOC_LIBRARY} ${TBBMALLOC_PROXY_LIBRARY})
+    set_property(TARGET hpx::allocator PROPERTY
+      INTERFACE_LINK_LIBRARIES ${TBBMALLOC_LIBRARY} ${TBBMALLOC_PROXY_LIBRARY})
   endif()
 
   if("${HPX_WITH_MALLOC_UPPER}" STREQUAL "CUSTOM")
@@ -81,8 +85,10 @@ if((NOT HPX_WITH_APEX) AND HPX_WITH_ITTNOTIFY)
   endif()
 
   add_library(hpx::amplifier INTERFACE IMPORTED)
-  target_include_directories(hpx::amplifier SYSTEM INTERFACE ${AMPLIFIER_INCLUDE_DIR})
-  target_link_libraries(hpx::amplifier INTERFACE ${AMPLIFIER_LIBRARIES})
+  set_property(TARGET hpx::amplifier PROPERTY
+    INTERFACE_INCLUDE_DIRECTORIES ${AMPLIFIER_INCLUDE_DIR})
+  set_property(TARGET hpx::amplifier PROPERTY
+    INTERFACE_LINK_LIBRARIES ${AMPLIFIER_LIBRARIES})
 
   hpx_add_config_define(HPX_HAVE_ITTNOTIFY 1)
   hpx_add_config_define(HPX_HAVE_THREAD_DESCRIPTION)
