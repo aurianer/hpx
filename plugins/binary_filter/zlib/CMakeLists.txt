@@ -15,28 +15,25 @@ if(HPX_WITH_COMPRESSION_ZLIB)
       hpx_error("zlib could not be found and HPX_WITH_COMPRESSION_ZLIB=ON, please point cmake to the correct location or set HPX_WITH_COMPRESSION_BZIP2 to OFF")
     endif()
   endif()
-endif()
 
-function(add_zlib_module)
   hpx_debug("add_zlib_module" "ZLIB_FOUND: ${ZLIB_FOUND}")
-  if(HPX_WITH_COMPRESSION_ZLIB)
-    add_hpx_library(compress_zlib
-      PLUGIN
-      SOURCES
-        "${PROJECT_SOURCE_DIR}/plugins/binary_filter/zlib/zlib_serialization_filter.cpp"
-      HEADERS
-        "${PROJECT_SOURCE_DIR}/hpx/plugins/binary_filter/zlib_serialization_filter.hpp"
-        "${PROJECT_SOURCE_DIR}/hpx/plugins/binary_filter/zlib_serialization_filter_registration.hpp"
-      FOLDER "Core/Plugins/Compression"
-      DEPENDENCIES ${ZLIB_LIBRARIES})
 
-    if(NOT MSVC)
-      target_include_directories(compress_zlib SYSTEM PRIVATE ${ZLIB_INCLUDE_DIRS})
-    endif()
+  add_hpx_library(compress_zlib
+    PLUGIN
+    SOURCES
+      "${PROJECT_SOURCE_DIR}/plugins/binary_filter/zlib/zlib_serialization_filter.cpp"
+    HEADERS
+      "${PROJECT_SOURCE_DIR}/hpx/plugins/binary_filter/zlib_serialization_filter.hpp"
+      "${PROJECT_SOURCE_DIR}/hpx/plugins/binary_filter/zlib_serialization_filter_registration.hpp"
+    FOLDER "Core/Plugins/Compression"
+    DEPENDENCIES ${ZLIB_LIBRARIES})
 
-    target_link_libraries(compress_zlib PRIVATE hpx::boost)
-
-    add_hpx_pseudo_dependencies(plugins.binary_filter.zlib compress_zlib)
-    add_hpx_pseudo_dependencies(core plugins.binary_filter.zlib)
+  if(NOT MSVC)
+    target_include_directories(compress_zlib SYSTEM PRIVATE ${ZLIB_INCLUDE_DIRS})
   endif()
-endfunction()
+
+  target_link_libraries(compress_zlib PRIVATE hpx::boost)
+
+  add_hpx_pseudo_dependencies(plugins.binary_filter.zlib compress_zlib)
+  add_hpx_pseudo_dependencies(core plugins.binary_filter.zlib)
+endif()
