@@ -9,6 +9,7 @@
 if(HPX_WITH_STATIC_LINKING)
   set(Boost_USE_STATIC_LIBS ON)
 endif()
+include(HPX_FilterLibrariesMSVC)
 
 # Add additional version to recognize
 set(Boost_ADDITIONAL_VERSIONS
@@ -95,10 +96,10 @@ if(HPX_PLATFORM_UC STREQUAL "XEONPHI")
 endif()
 
 set_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
-set_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_LIBRARIES})
+set_interface_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_LIBRARIES})
 
-find_package(Threads REQUIRED)
-set_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
+find_package(Threads QUIET REQUIRED)
+set_interface_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
 
 if(NOT HPX_WITH_CXX17_FILESYSTEM)
   find_package(Boost ${Boost_MINIMUM_VERSION}
@@ -111,7 +112,7 @@ if(NOT HPX_WITH_CXX17_FILESYSTEM)
     or provide a boost installation including the filesystem library")
   endif()
   # Can't directly link to "filesystem" target in set_property, can change is when using target_link_libraries
-  set_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_FILESYSTEM_LIBRARIES})
+  set_interface_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_FILESYSTEM_LIBRARIES})
 endif()
 
 if(HPX_WITH_COMPRESSION_BZIP2 OR HPX_WITH_COMPRESSION_ZLIB)
@@ -124,7 +125,7 @@ if(HPX_WITH_COMPRESSION_BZIP2 OR HPX_WITH_COMPRESSION_ZLIB)
     the iostreams library")
   endif()
   # Can't directly link to "iostreams" target in set_property, can change is when using target_link_libraries
-  set_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_IOSTREAMS_LIBRARIES})
+  set_interface_property(TARGET hpx::boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_IOSTREAMS_LIBRARIES})
 endif()
 
 include(HPX_AddDefinitions)
