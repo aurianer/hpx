@@ -7,9 +7,6 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-# To fix cmake link bug
-include(HPX_FilterLibrariesMSVC)
-
 if(NOT HPX_WITH_MALLOC)
   set(HPX_WITH_MALLOC CACHE STRING
           "Use the specified allocator. Supported allocators are tcmalloc, jemalloc, tbbmalloc and system."
@@ -36,7 +33,7 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
       hpx_error(${allocator_error})
     endif()
 
-    set_interface_property(TARGET hpx::allocator PROPERTY
+    set_property(TARGET hpx::allocator PROPERTY
       INTERFACE_LINK_LIBRARIES ${TCMALLOC_LIBRARIES})
 
     if(MSVC)
@@ -53,7 +50,7 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
     set_property(TARGET hpx::allocator PROPERTY
       INTERFACE_INCLUDE_DIRECTORIES ${JEMALLOC_INCLUDE_DIR}
       ${JEMALLOC_ADDITIONAL_INCLUDE_DIR})
-    set_interface_property(TARGET hpx::allocator PROPERTY
+    set_property(TARGET hpx::allocator PROPERTY
       INTERFACE_LINK_LIBRARIES ${JEMALLOC_LIBRARIES})
   endif()
 
@@ -65,7 +62,7 @@ if(NOT HPX_WITH_MALLOC_DEFAULT)
     if(MSVC)
       hpx_add_link_flag_if_available(/INCLUDE:__TBB_malloc_proxy)
     endif()
-    set_interface_property(TARGET hpx::allocator PROPERTY
+    set_property(TARGET hpx::allocator PROPERTY
       INTERFACE_LINK_LIBRARIES ${TBBMALLOC_LIBRARY} ${TBBMALLOC_PROXY_LIBRARY})
   endif()
 
@@ -90,7 +87,7 @@ if((NOT HPX_WITH_APEX) AND HPX_WITH_ITTNOTIFY)
   add_library(hpx::amplifier INTERFACE IMPORTED)
   set_property(TARGET hpx::amplifier PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${AMPLIFIER_INCLUDE_DIR})
-  set_interface_property(TARGET hpx::amplifier PROPERTY
+  set_property(TARGET hpx::amplifier PROPERTY
     INTERFACE_LINK_LIBRARIES ${AMPLIFIER_LIBRARIES})
 
   hpx_add_config_define(HPX_HAVE_ITTNOTIFY 1)

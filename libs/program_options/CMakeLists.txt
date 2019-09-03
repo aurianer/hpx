@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 3.3.2 FATAL_ERROR)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # To fix MSVC cmake bug
-include(HPX_FilterLibrariesMSVC)
 include(HPX_Option)
 
 # Compatibility with using Boost.ProgramOptions, introduced in V1.4.0
@@ -30,7 +29,7 @@ if(HPX_PROGRAM_OPTIONS_WITH_BOOST_PROGRAM_OPTIONS_COMPATIBILITY)
     hpx_error("Could not find Boost.ProgramOptions. Provide a boost installation including the program_options library")
   endif()
   add_library(hpx::boost::program_options INTERFACE IMPORTED)
-  set_interface_property(TARGET hpx::boost::program_options PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_PROGRAM_OPTIONS_LIBRARIES})
+  set_property(TARGET hpx::boost::program_options PROPERTY INTERFACE_LINK_LIBRARIES ${Boost_PROGRAM_OPTIONS_LIBRARIES})
   set(__boost_program_options hpx::boost::program_options)
   # FIXME : temporary before we fix the export modules thing
   hpx_libraries(${Boost_LIBRARIES})
