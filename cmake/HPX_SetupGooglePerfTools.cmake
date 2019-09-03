@@ -13,9 +13,6 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-# To fix cmake link bug
-include(HPX_FilterLibrariesMSVC)
-
 if(HPX_WITH_GOOGLE_PERFTOOLS)
   find_package(GooglePerftools)
   if(NOT GOOGLE_PERFTOOLS_FOUND)
@@ -27,6 +24,6 @@ if(HPX_WITH_GOOGLE_PERFTOOLS)
   add_library(hpx::gperftools INTERFACE IMPORTED)
   set_property(TARGET hpx::gperftools PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${GOOGLE_PERFTOOLS_INCLUDE_DIR})
-  set_interface_property(TARGET hpx::gperftools PROPERTY
+  set_property(TARGET hpx::gperftools PROPERTY
     INTERFACE_LINK_LIBRARIES ${GOOGLE_PERFTOOLS_LIBRARIES})
 endif()
