@@ -34,6 +34,7 @@ function(hpx_collect_usage_requirements target compile_definitions compile_optio
   get_target_property(_target_link_libraries ${target} INTERFACE_LINK_LIBRARIES)
   get_target_property(_target_link_options ${target} INTERFACE_LINK_OPTIONS)
   get_target_property(_target_type ${target} TYPE)
+  get_target_property(_target_imported ${target} IMPORTED)
 
   # If the target is a library link against it.
   if("${_target_type}" STREQUAL "STATIC_LIBRARY" OR "${_target_type}" STREQUAL "SHARED_LIBRARY")
@@ -50,8 +51,11 @@ function(hpx_collect_usage_requirements target compile_definitions compile_optio
     set(_libraries "")
   endif()
 
-  # In case of components no need to do the recursive search
-  if (NOT ${is_component})
+  # We disable recursive search in case:
+  # - components cause we already link to all components (and their deps are
+  # between each other)
+  # - imported libraries, all the needed ones are in INTERFACE_LINK_LIBRARIES
+  if (NOT ${is_component} AND NOT ${_target_imported})
     foreach(dep IN LISTS _target_link_libraries)
 
       if(${dep} MATCHES "^\\$<LINK_ONLY:([^>]+)>$")
