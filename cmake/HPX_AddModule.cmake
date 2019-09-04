@@ -170,18 +170,18 @@ function(add_hpx_module name)
     hpx_debug(${header_file})
   endforeach(header_file)
 
-  add_library(hpx_${name} STATIC
+  add_library(hpx_${name} OBJECT
     ${sources} ${force_linking_source}
     ${headers} ${force_linking_header} ${generated_headers} ${compat_headers}
     )
 
-  target_link_libraries(hpx_${name} PUBLIC ${${name}_DEPENDENCIES})
+  #target_link_libraries(hpx_${name} PUBLIC ${${name}_DEPENDENCIES})
   target_include_directories(hpx_${name} PUBLIC
     $<BUILD_INTERFACE:${HEADER_ROOT}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-  target_link_libraries(hpx_${name} PRIVATE hpx_internal_flags)
+  #target_link_libraries(hpx_${name} PRIVATE hpx_internal_flags)
 
   if(HPX_${name_upper}_WITH_COMPATIBILITY_HEADERS)
     target_include_directories(hpx_${name} PUBLIC

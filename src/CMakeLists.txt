@@ -312,12 +312,12 @@ endforeach()
 foreach(_module ${HPX_LIBS})
   # add module binaries as PRIVATE dependencies to the core hpx library to
   # avoid dependent applicatons have to link against those
-  target_link_libraries(hpx PRIVATE hpx_${_module})
+  target_link_libraries(hpx PUBLIC $<TARGET_OBJECTS:hpx_${_module}>)
 
   # add module include directories as PUBLIC to core hpx library to enable
   # compilation against indirectly included headers
-  get_target_property(_module_includes hpx_${_module} INTERFACE_INCLUDE_DIRECTORIES)
-  target_include_directories(hpx PUBLIC ${_module_includes})
+  #get_target_property(_module_includes hpx_${_module} INTERFACE_INCLUDE_DIRECTORIES)
+  #target_include_directories(hpx PUBLIC ${_module_includes})
 endforeach()
 
 target_compile_definitions(hpx PUBLIC HPX_ENABLE_ASSERT_HANDLER PRIVATE

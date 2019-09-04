@@ -16,7 +16,7 @@ foreach(test ${tests})
   add_hpx_executable(${test}_test
                      SOURCES ${sources}
                      NOLIBS
-                     DEPENDENCIES hpx_assertion
+                     DEPENDENCIES $<TARGET_OBJECTS:hpx_assertion>
                      EXCLUDE_FROM_ALL
                      FOLDER "Tests/Unit/Modules/Assertion/")
 

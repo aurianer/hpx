@@ -1740,258 +1740,258 @@ set(HPX_DEBUG_POSTFIX "d")
 include(HPX_CompilerFlagsTarget)
 
 ################################################################################
-# Add libraries
+# Add libraries/modules
 ################################################################################
 add_subdirectory(libs)
 
-################################################################################
-# Add core dependency
-################################################################################
-add_hpx_pseudo_target(core)
-
-################################################################################
-# Configure compression and other plugins
-################################################################################
-set(HPX_STATIC_PARCELPORT_PLUGINS "" CACHE INTERNAL "" FORCE)
-add_hpx_pseudo_target(plugins)
-add_subdirectory(plugins)
-
-if(HPX_WITH_COMPRESSION_BZIP2)
-  hpx_add_config_define(HPX_HAVE_COMPRESSION_BZIP2)
-endif()
-if(HPX_WITH_COMPRESSION_SNAPPY)
-  hpx_add_config_define(HPX_HAVE_COMPRESSION_SNAPPY)
-endif()
-if(HPX_WITH_COMPRESSION_ZLIB)
-  hpx_add_config_define(HPX_HAVE_COMPRESSION_ZLIB)
-endif()
-
-################################################################################
-# Documentation toolchain (Sphinx, Doxygen, Breathe)
-################################################################################
-hpx_include(Documentation)
-
-################################################################################
-# Target specification
-################################################################################
-# Recurse into some subdirectories. This does not actually cause another cmake
-# executable to run. The same process will walk through the project's entire
-# directory structure.
-if(HPX_WITH_TOOLS)
-  add_hpx_pseudo_target(tools)
-  add_subdirectory(tools)
-endif()
-
-################################################################################
-# Add core configuration
-################################################################################
-add_subdirectory(src)
-
-################################################################################
-# Add components
-################################################################################
-add_subdirectory(components)
-
-###############################################################################
-# Tests
-###############################################################################
-if(HPX_WITH_TESTS)
-  find_package(PythonInterp)
-
-  if(NOT PYTHONINTERP_FOUND)
-    hpx_warn("A python interpreter could not be found. The test suite can not be run automatically.")
-  endif()
-
-  # pseudo_target added above
-  add_subdirectory(tests)
-endif()
-
-if(HPX_WITH_EXAMPLES)
-  add_subdirectory(examples)
-endif()
-
-if(HPX_WITH_DOCUMENTATION)
-  add_subdirectory(docs)
-endif()
-
-# Configure hpxrun.py
-configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/hpxrun.py.in"
-               "${CMAKE_BINARY_DIR}/bin/hpxrun.py"
-               @ONLY)
-
-################################################################################
-# installation instructions
-################################################################################
-install(
-  FILES "${CMAKE_BINARY_DIR}/bin/hpxrun.py"
-  DESTINATION ${CMAKE_INSTALL_BINDIR}
-  COMPONENT core
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-  GROUP_READ GROUP_EXECUTE
-  WORLD_READ WORLD_EXECUTE)
-
-install( # install all hpx header files
-  DIRECTORY hpx/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx
-  COMPONENT core
-  FILES_MATCHING PATTERN "*.hpp"
-  PATTERN ".git" EXCLUDE
-  PATTERN "CMakeFiles" EXCLUDE
-  PATTERN "CTestFiles" EXCLUDE)
-
-# Install all HPX header that have been configured using various
-# cmake options
-install(
-  DIRECTORY "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/hpx/"
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx
-  COMPONENT core
-  FILES_MATCHING PATTERN "*.hpp"
-  PATTERN ".git" EXCLUDE
-  PATTERN "CMakeFiles" EXCLUDE
-  PATTERN "CTestFiles" EXCLUDE)
-
-install( # Install all HPX cmake utility files
-  DIRECTORY cmake/
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${HPX_PACKAGE_NAME}
-  COMPONENT core
-  PATTERN "templates" EXCLUDE
-  PATTERN "packaging" EXCLUDE
-  PATTERN ".git" EXCLUDE)
-
-install( # Install HPX Python scripts
-  DIRECTORY python/scripts/
-  DESTINATION ${CMAKE_INSTALL_BINDIR}
-  FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-                   GROUP_READ GROUP_EXECUTE
-                   WORLD_READ WORLD_EXECUTE
-  COMPONENT core
-  FILES_MATCHING PATTERN "*.py"
-  PATTERN ".git" EXCLUDE)
-
-#   if(UNIX)
-#     file(GLOB scripts "${PROJECT_SOURCE_DIR}/python/scripts/*.py")
-#     execute_process(COMMAND "${CMAKE_COMMAND}" -E make_directory
-#       "${CMAKE_BINARY_DIR}/python/scripts" )
-#     foreach(script ${scripts})
-#       get_filename_component(script_name ${script} NAME)
-#       get_filename_component(script_name_we ${script} NAME_WE)
+#################################################################################
+## Add core dependency
+#################################################################################
+#add_hpx_pseudo_target(core)
 #
-#       #make copy, so that we have intact symlink in CMAKE_BINARY_DIR
-#       execute_process(
-#         COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${script}" "${script_name}"
-#   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python/scripts")
+#################################################################################
+## Configure compression and other plugins
+#################################################################################
+#set(HPX_STATIC_PARCELPORT_PLUGINS "" CACHE INTERNAL "" FORCE)
+#add_hpx_pseudo_target(plugins)
+#add_subdirectory(plugins)
 #
-#       execute_process(
-#         COMMAND "${CMAKE_COMMAND}" -E create_symlink "${script_name}" "${script_name_we}"
-#   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python/scripts")
+#if(HPX_WITH_COMPRESSION_BZIP2)
+#  hpx_add_config_define(HPX_HAVE_COMPRESSION_BZIP2)
+#endif()
+#if(HPX_WITH_COMPRESSION_SNAPPY)
+#  hpx_add_config_define(HPX_HAVE_COMPRESSION_SNAPPY)
+#endif()
+#if(HPX_WITH_COMPRESSION_ZLIB)
+#  hpx_add_config_define(HPX_HAVE_COMPRESSION_ZLIB)
+#endif()
 #
-#       install(FILES "${CMAKE_BINARY_DIR}/python/scripts/${script_name_we}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-#     endforeach()
-#   endif()
+#################################################################################
+## Documentation toolchain (Sphinx, Doxygen, Breathe)
+#################################################################################
+#hpx_include(Documentation)
 #
-#   install( # Install HPX Python module (TODO: this is a temporary hack)
-#     DIRECTORY python/hpx
-#     DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx-${HPX_VERSION}/python
-#     COMPONENT core
-#     FILES_MATCHING PATTERN "*.py"
-#     PATTERN ".git" EXCLUDE)
+#################################################################################
+## Target specification
+#################################################################################
+## Recurse into some subdirectories. This does not actually cause another cmake
+## executable to run. The same process will walk through the project's entire
+## directory structure.
+#if(HPX_WITH_TOOLS)
+#  add_hpx_pseudo_target(tools)
+#  add_subdirectory(tools)
+#endif()
 #
-#   execute_process(COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_BINARY_DIR}/python" )
-#   #make symlink, so that we have intact hpx symlink in CMAKE_BINARY_DIR
-#   execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink "${PROJECT_SOURCE_DIR}/python/hpx"
-#     "hpx-${HPX_VERSION}" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python")
-#   # create a symlink in share pointing to the latest HPX installation
-#   execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink "hpx-${HPX_VERSION}" "hpx" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python")
-#   install(DIRECTORY "${CMAKE_BINARY_DIR}/python/hpx" DESTINATION "${CMAKE_INSTALL_DATADIR}")
-
-if("${HPX_PLATFORM_UC}" STREQUAL "XEONPHI")
-  # FIXME: push changes upstream
-  install(
-    DIRECTORY external/asio/boost
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx/external
-    COMPONENT core
-    FILES_MATCHING PATTERN "*.hpp"
-    PATTERN ".git" EXCLUDE)
-endif()
-
-install(
-  FILES "${PROJECT_SOURCE_DIR}/LICENSE_1_0.txt"
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx
-  COMPONENT license)
-
-if(HPX_WITH_DOCUMENTATION)
-  install(
-    FILES "${PROJECT_SOURCE_DIR}/docs/index.html"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/
-    COMPONENT docs)
-
-  if("html" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
-    install(
-      DIRECTORY "${CMAKE_BINARY_DIR}/share/hpx/docs/html/"
-      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/html
-      COMPONENT docs
-      PATTERN "*.buildinfo" EXCLUDE)
-  endif()
-
-  if("singlehtml" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
-    install(
-      DIRECTORY "${CMAKE_BINARY_DIR}/share/hpx/docs/singlehtml/"
-      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/singlehtml
-      COMPONENT docs
-      PATTERN "*.buildinfo" EXCLUDE)
-  endif()
-
-  if("latexpdf" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
-    install(
-      FILES "${CMAKE_BINARY_DIR}/share/hpx/docs/latexpdf/latex/HPX.pdf"
-      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/pdf/
-      COMPONENT docs)
-  endif()
-
-  if("man" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
-    install(
-      FILES "${CMAKE_BINARY_DIR}/share/hpx/docs/man/hpx.1"
-      DESTINATION ${CMAKE_INSTALL_MANDIR}/
-      COMPONENT docs)
-  endif()
-endif()
-
-if(HPX_WITH_VIM_YCM)
-  set(build_dir_file ${CMAKE_BINARY_DIR}/.ycm_extra_conf.py)
-  set(source_dir_file ${CMAKE_SOURCE_DIR}/.ycm_extra_conf.py)
-  configure_file(${CMAKE_SOURCE_DIR}/tools/vim/.ycm_extra_conf.py
-               ${build_dir_file} @ONLY)
-  add_custom_target(
-    configure_ycm
-    COMMAND ${CMAKE_COMMAND} -E copy ${build_dir_file} ${source_dir_file}
-    COMMENT "Copying YCM config file to source directory"
-    VERBATIM
-  )
-  hpx_info("VIM YouCompleteMe: run 'make configure_ycm' to copy config file to source directory and enable support in YCM. To enable automatic loading of configure file, add to your .vimrc option: \"let g:ycm_extra_conf_globlist = ['${CMAKE_SOURCE_DIR}/*']\"")
-endif()
-
+#################################################################################
+## Add core configuration
+#################################################################################
+#add_subdirectory(src)
+#
+#################################################################################
+## Add components
+#################################################################################
+#add_subdirectory(components)
+#
 ################################################################################
-# Add rpm packaging
-
-hpx_option(HPX_WITH_RPM
-  BOOL
-  "Enable or disable the generation of rpm packages"
-OFF ADVANCED)
-
-if(HPX_WITH_RPM)
-add_subdirectory(cmake/packaging/rpm)
-endif()
-
+## Tests
 ################################################################################
-# print overall configuration summary
-include(HPX_PrintSummary)
-
-################################################################################
-# External build system support (FindHPX.cmake and pkg-config).
-################################################################################
-
-include(HPX_GeneratePackage)
-
-message("")
-message("HPX will be installed to ${CMAKE_INSTALL_PREFIX}")
-message("")
+#if(HPX_WITH_TESTS)
+#  find_package(PythonInterp)
+#
+#  if(NOT PYTHONINTERP_FOUND)
+#    hpx_warn("A python interpreter could not be found. The test suite can not be run automatically.")
+#  endif()
+#
+#  # pseudo_target added above
+#  add_subdirectory(tests)
+#endif()
+#
+#if(HPX_WITH_EXAMPLES)
+#  add_subdirectory(examples)
+#endif()
+#
+#if(HPX_WITH_DOCUMENTATION)
+#  add_subdirectory(docs)
+#endif()
+#
+## Configure hpxrun.py
+#configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/hpxrun.py.in"
+#               "${CMAKE_BINARY_DIR}/bin/hpxrun.py"
+#               @ONLY)
+#
+#################################################################################
+## installation instructions
+#################################################################################
+#install(
+#  FILES "${CMAKE_BINARY_DIR}/bin/hpxrun.py"
+#  DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  COMPONENT core
+#  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+#  GROUP_READ GROUP_EXECUTE
+#  WORLD_READ WORLD_EXECUTE)
+#
+#install( # install all hpx header files
+#  DIRECTORY hpx/
+#  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx
+#  COMPONENT core
+#  FILES_MATCHING PATTERN "*.hpp"
+#  PATTERN ".git" EXCLUDE
+#  PATTERN "CMakeFiles" EXCLUDE
+#  PATTERN "CTestFiles" EXCLUDE)
+#
+## Install all HPX header that have been configured using various
+## cmake options
+#install(
+#  DIRECTORY "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/hpx/"
+#  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx
+#  COMPONENT core
+#  FILES_MATCHING PATTERN "*.hpp"
+#  PATTERN ".git" EXCLUDE
+#  PATTERN "CMakeFiles" EXCLUDE
+#  PATTERN "CTestFiles" EXCLUDE)
+#
+#install( # Install all HPX cmake utility files
+#  DIRECTORY cmake/
+#  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${HPX_PACKAGE_NAME}
+#  COMPONENT core
+#  PATTERN "templates" EXCLUDE
+#  PATTERN "packaging" EXCLUDE
+#  PATTERN ".git" EXCLUDE)
+#
+#install( # Install HPX Python scripts
+#  DIRECTORY python/scripts/
+#  DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+#                   GROUP_READ GROUP_EXECUTE
+#                   WORLD_READ WORLD_EXECUTE
+#  COMPONENT core
+#  FILES_MATCHING PATTERN "*.py"
+#  PATTERN ".git" EXCLUDE)
+#
+##   if(UNIX)
+##     file(GLOB scripts "${PROJECT_SOURCE_DIR}/python/scripts/*.py")
+##     execute_process(COMMAND "${CMAKE_COMMAND}" -E make_directory
+##       "${CMAKE_BINARY_DIR}/python/scripts" )
+##     foreach(script ${scripts})
+##       get_filename_component(script_name ${script} NAME)
+##       get_filename_component(script_name_we ${script} NAME_WE)
+##
+##       #make copy, so that we have intact symlink in CMAKE_BINARY_DIR
+##       execute_process(
+##         COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${script}" "${script_name}"
+##   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python/scripts")
+##
+##       execute_process(
+##         COMMAND "${CMAKE_COMMAND}" -E create_symlink "${script_name}" "${script_name_we}"
+##   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python/scripts")
+##
+##       install(FILES "${CMAKE_BINARY_DIR}/python/scripts/${script_name_we}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+##     endforeach()
+##   endif()
+##
+##   install( # Install HPX Python module (TODO: this is a temporary hack)
+##     DIRECTORY python/hpx
+##     DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx-${HPX_VERSION}/python
+##     COMPONENT core
+##     FILES_MATCHING PATTERN "*.py"
+##     PATTERN ".git" EXCLUDE)
+##
+##   execute_process(COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_BINARY_DIR}/python" )
+##   #make symlink, so that we have intact hpx symlink in CMAKE_BINARY_DIR
+##   execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink "${PROJECT_SOURCE_DIR}/python/hpx"
+##     "hpx-${HPX_VERSION}" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python")
+##   # create a symlink in share pointing to the latest HPX installation
+##   execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink "hpx-${HPX_VERSION}" "hpx" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/python")
+##   install(DIRECTORY "${CMAKE_BINARY_DIR}/python/hpx" DESTINATION "${CMAKE_INSTALL_DATADIR}")
+#
+#if("${HPX_PLATFORM_UC}" STREQUAL "XEONPHI")
+#  # FIXME: push changes upstream
+#  install(
+#    DIRECTORY external/asio/boost
+#    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpx/external
+#    COMPONENT core
+#    FILES_MATCHING PATTERN "*.hpp"
+#    PATTERN ".git" EXCLUDE)
+#endif()
+#
+#install(
+#  FILES "${PROJECT_SOURCE_DIR}/LICENSE_1_0.txt"
+#  DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx
+#  COMPONENT license)
+#
+#if(HPX_WITH_DOCUMENTATION)
+#  install(
+#    FILES "${PROJECT_SOURCE_DIR}/docs/index.html"
+#    DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/
+#    COMPONENT docs)
+#
+#  if("html" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
+#    install(
+#      DIRECTORY "${CMAKE_BINARY_DIR}/share/hpx/docs/html/"
+#      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/html
+#      COMPONENT docs
+#      PATTERN "*.buildinfo" EXCLUDE)
+#  endif()
+#
+#  if("singlehtml" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
+#    install(
+#      DIRECTORY "${CMAKE_BINARY_DIR}/share/hpx/docs/singlehtml/"
+#      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/singlehtml
+#      COMPONENT docs
+#      PATTERN "*.buildinfo" EXCLUDE)
+#  endif()
+#
+#  if("latexpdf" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
+#    install(
+#      FILES "${CMAKE_BINARY_DIR}/share/hpx/docs/latexpdf/latex/HPX.pdf"
+#      DESTINATION ${CMAKE_INSTALL_DATADIR}/hpx/docs/pdf/
+#      COMPONENT docs)
+#  endif()
+#
+#  if("man" IN_LIST HPX_WITH_DOCUMENTATION_OUTPUT_FORMATS)
+#    install(
+#      FILES "${CMAKE_BINARY_DIR}/share/hpx/docs/man/hpx.1"
+#      DESTINATION ${CMAKE_INSTALL_MANDIR}/
+#      COMPONENT docs)
+#  endif()
+#endif()
+#
+#if(HPX_WITH_VIM_YCM)
+#  set(build_dir_file ${CMAKE_BINARY_DIR}/.ycm_extra_conf.py)
+#  set(source_dir_file ${CMAKE_SOURCE_DIR}/.ycm_extra_conf.py)
+#  configure_file(${CMAKE_SOURCE_DIR}/tools/vim/.ycm_extra_conf.py
+#               ${build_dir_file} @ONLY)
+#  add_custom_target(
+#    configure_ycm
+#    COMMAND ${CMAKE_COMMAND} -E copy ${build_dir_file} ${source_dir_file}
+#    COMMENT "Copying YCM config file to source directory"
+#    VERBATIM
+#  )
+#  hpx_info("VIM YouCompleteMe: run 'make configure_ycm' to copy config file to source directory and enable support in YCM. To enable automatic loading of configure file, add to your .vimrc option: \"let g:ycm_extra_conf_globlist = ['${CMAKE_SOURCE_DIR}/*']\"")
+#endif()
+#
+#################################################################################
+## Add rpm packaging
+#
+#hpx_option(HPX_WITH_RPM
+#  BOOL
+#  "Enable or disable the generation of rpm packages"
+#OFF ADVANCED)
+#
+#if(HPX_WITH_RPM)
+#add_subdirectory(cmake/packaging/rpm)
+#endif()
+#
+#################################################################################
+## print overall configuration summary
+#include(HPX_PrintSummary)
+#
+#################################################################################
+## External build system support (FindHPX.cmake and pkg-config).
+#################################################################################
+#
+#include(HPX_GeneratePackage)
+#
+#message("")
+#message("HPX will be installed to ${CMAKE_INSTALL_PREFIX}")
+#message("")
