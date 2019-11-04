@@ -40,7 +40,7 @@ if(HPX_WITH_HPXMP)
     endif()
   endif(NOT HPXMP_ROOT)
 
-  add_subdirectory(${HPXMP_ROOT})
+  add_subdirectory(${HPXMP_ROOT} ${CMAKE_BINARY_DIR}/hpxmp)
 
   # make sure thread-local storage is supported
   hpx_add_config_define(HPX_HAVE_THREAD_LOCAL_STORAGE)
