@@ -26,7 +26,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 namespace hpx { namespace naming
 {
-    struct HPX_EXPORT address
+    struct address
     {
         typedef std::int32_t component_type;
         typedef std::uint64_t address_type;
