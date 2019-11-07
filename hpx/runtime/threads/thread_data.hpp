@@ -41,6 +41,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace hpx { namespace threads {
+#ifdef HPX_HAVE_THREAD_FULLBACKTRACE_ON_SUSPENSION
+    typedef char const * backtrace_type;
+#else
+    typedef util::backtrace const * backtrace_type;
+#endif
 
     ////////////////////////////////////////////////////////////////////////////
     /// A \a thread is the representation of a ParalleX thread. It's a first
@@ -354,64 +359,33 @@ namespace hpx { namespace threads {
 
 #ifndef HPX_HAVE_THREAD_BACKTRACE_ON_SUSPENSION
 
-#ifdef HPX_HAVE_THREAD_FULLBACKTRACE_ON_SUSPENSION
 #if defined(HPX_GCC_VERSION) && (HPX_GCC_VERSION >= 70000)
         HPX_CONSTEXPR
 #endif
-        char const* get_backtrace() const noexcept
+        backtrace_type get_backtrace() const noexcept
         {
             return nullptr;
         }
-        char const* set_backtrace(char const*) noexcept
+        backtrace_type set_backtrace(backtrace_type) noexcept
         {
             return nullptr;
         }
-#else
-#if defined(HPX_GCC_VERSION) && (HPX_GCC_VERSION >= 70000)
-        HPX_CONSTEXPR
-#endif
-        util::backtrace const* get_backtrace() const noexcept
-        {
-            return nullptr;
-        }
-        util::backtrace const* set_backtrace(util::backtrace const*) noexcept
-        {
-            return nullptr;
-        }
-#endif
 
 #else    // defined(HPX_HAVE_THREAD_BACKTRACE_ON_SUSPENSION
 
-#ifdef HPX_HAVE_THREAD_FULLBACKTRACE_ON_SUSPENSION
-        char const* get_backtrace() const noexcept
+        backtrace_type get_backtrace() const noexcept
         {
             mutex_type::scoped_lock l(this);
             return backtrace_;
         }
-        char const* set_backtrace(char const* value) noexcept
+        backtrace_type set_backtrace(backtrace_type value) noexcept
         {
             mutex_type::scoped_lock l(this);
 
-            char const* bt = backtrace_;
+            backtrace_type bt = backtrace_;
             backtrace_ = value;
             return bt;
         }
-#else
-        util::backtrace const* get_backtrace() const noexcept
-        {
-            mutex_type::scoped_lock l(this);
-            return backtrace_;
-        }
-        util::backtrace const* set_backtrace(
-            util::backtrace const* value) noexcept
-        {
-            mutex_type::scoped_lock l(this);
-
-            util::backtrace const* bt = backtrace_;
-            backtrace_ = value;
-            return bt;
-        }
-#endif
 
         // Generate full backtrace for captured stack
         std::string backtrace()
@@ -570,11 +544,7 @@ namespace hpx { namespace threads {
 #endif
 
 #ifdef HPX_HAVE_THREAD_BACKTRACE_ON_SUSPENSION
-#ifdef HPX_HAVE_THREAD_FULLBACKTRACE_ON_SUSPENSION
-        char const* backtrace_;
-#else
-        util::backtrace const* backtrace_;
-#endif
+        backtrace_type backtrace_;
 #endif
         ///////////////////////////////////////////////////////////////////////
         thread_priority priority_;
