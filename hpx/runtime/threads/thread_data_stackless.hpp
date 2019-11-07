@@ -16,7 +16,6 @@
 #include <hpx/coroutines/thread_enums.hpp>
 #include <hpx/errors.hpp>
 #include <hpx/functional/function.hpp>
-#include <hpx/runtime/threads/execution_agent.hpp>
 #include <hpx/runtime/threads/thread_data.hpp>
 #include <hpx/runtime/threads/thread_init_data.hpp>
 
