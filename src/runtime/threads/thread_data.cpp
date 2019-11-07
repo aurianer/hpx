@@ -12,7 +12,6 @@
 #include <hpx/errors.hpp>
 #include <hpx/functional/function.hpp>
 #include <hpx/logging.hpp>
-#include <hpx/runtime/naming/address.hpp>
 #include <hpx/runtime/threads/thread_data.hpp>
 #include <hpx/thread_support/unlock_guard.hpp>
 #if defined(HPX_HAVE_APEX)
@@ -325,7 +324,7 @@ namespace hpx { namespace threads {
     }
 #endif
 
-    naming::address::address_type get_self_component_id()
+    naming::address_type get_self_component_id()
     {
 #ifndef HPX_HAVE_THREAD_TARGET_ADDRESS
             return 0;
