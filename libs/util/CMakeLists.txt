@@ -13,6 +13,7 @@ set(util_headers
   hpx/util/get_and_reset_value.hpp
   hpx/util/insert_checked.hpp
   hpx/util/manage_config.hpp
+  hpx/util/naming_types_fwd.hpp
   hpx/util/safe_lexical_cast.hpp
 )
 

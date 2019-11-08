@@ -19,11 +19,11 @@
 #include <hpx/errors.hpp>
 #include <hpx/functional/function.hpp>
 #include <hpx/logging.hpp>
-#include <hpx/runtime/naming_fwd.hpp>
 #include <hpx/runtime/threads/thread_init_data.hpp>
 #include <hpx/logging.hpp>
 #include <hpx/thread_support/atomic_count.hpp>
 #include <hpx/util/backtrace.hpp>
+#include <hpx/util/naming_types_fwd.hpp>
 #include <hpx/util/thread_description.hpp>
 #if defined(HPX_HAVE_APEX)
 #include <hpx/util/apex.hpp>
