@@ -6,9 +6,12 @@
 
 #include <hpx/config.hpp>
 #include <hpx/assertion.hpp>
+#include <hpx/util/thread_description.hpp>
+
+#if defined(HPX_HAVE_THREAD_DESCRIPTION)
 #include <hpx/runtime/threads/thread_helpers.hpp>
 #include <hpx/util/safe_lexical_cast.hpp>
-#include <hpx/util/thread_description.hpp>
+#endif
 
 #include <iostream>
 #include <sstream>
