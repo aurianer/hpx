@@ -17,6 +17,7 @@
 #include <hpx/lcos/local/spinlock.hpp>
 #include <hpx/memory/intrusive_ptr.hpp>
 #include <hpx/runtime/launch_policy.hpp>
+#include <hpx/runtime/naming_fwd.hpp>
 #include <hpx/runtime/threads/thread_executor.hpp>
 #include <hpx/runtime/threads/thread_helpers.hpp>
 #include <hpx/thread_support/assert_owns_lock.hpp>

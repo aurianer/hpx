@@ -21,6 +21,7 @@
 #include <hpx/runtime/parcelset_fwd.hpp>
 #include <hpx/serialization/serialization_fwd.hpp>
 #include <hpx/serialization/traits/is_bitwise_serializable.hpp>
+#include <hpx/util/naming_types_fwd.hpp>
 
 #include <cstddef>
 #include <cstdint>

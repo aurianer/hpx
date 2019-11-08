@@ -10,7 +10,6 @@
 
 #include <hpx/config.hpp>
 #include <hpx/runtime/agas_fwd.hpp>
-#include <hpx/util/naming_types_fwd.hpp>
 
 #include <cstdint>
 
