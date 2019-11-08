@@ -815,7 +815,7 @@ namespace hpx { namespace threads {
         auto thrd_data = get_self_id_data();
         if (thrd_data)
         {
-            pool = thrd_data->get_scheduler_base()->get_parent_pool();
+            pool = get_thread_data_scheduler(thrd_data)->get_parent_pool();
         }
         else
         {
@@ -832,7 +832,7 @@ namespace hpx { namespace threads {
         auto thrd_data = get_self_id_data();
         if (thrd_data)
         {
-            pool = thrd_data->get_scheduler_base()->get_parent_pool();
+            pool = get_thread_data_scheduler(thrd_data)->get_parent_pool();
         }
         else
         {

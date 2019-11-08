@@ -747,7 +747,7 @@ namespace hpx { namespace threads { namespace policies {
         void destroy_thread(
             threads::thread_data* thrd, std::int64_t& busy_count) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
             thrd->get_queue<thread_queue_type>().destroy_thread(
                 thrd, busy_count);
         }

@@ -57,7 +57,7 @@ namespace hpx { namespace threads {
         bool retry_on_active, error_code& ec)
     {
         return detail::set_thread_state_timed(
-            *(get_thread_id_data(id)->get_scheduler_base()), abs_time, id,
+            *(get_thread_data_scheduler(get_thread_id_data(id))), abs_time, id,
             state, stateex, priority, thread_schedule_hint(), timer_started,
             retry_on_active, ec);
     }
@@ -390,7 +390,7 @@ namespace hpx { namespace threads {
             ec = make_success_code();
 
         return executors::current_executor(
-            get_thread_id_data(id)->get_scheduler_base());
+            get_thread_data_scheduler(get_thread_id_data(id)));
     }
 
     threads::thread_pool_base* get_pool(
@@ -406,7 +406,7 @@ namespace hpx { namespace threads {
         if (&ec != &throws)
             ec = make_success_code();
 
-        return get_thread_id_data(id)->get_scheduler_base()->get_parent_pool();
+        return get_thread_data_scheduler(get_thread_id_data(id))->get_parent_pool();
     }
 }}    // namespace hpx::threads
 
@@ -503,11 +503,10 @@ namespace hpx { namespace this_thread {
             // We might need to dispatch 'nextid' to it's correct scheduler
             // only if our current scheduler is the same, we should yield the id
             if (nextid &&
-                get_thread_id_data(nextid)->get_scheduler_base() !=
-                    get_thread_id_data(id)->get_scheduler_base())
+                get_thread_data_scheduler(get_thread_id_data(nextid)) !=
+                    get_thread_data_scheduler(get_thread_id_data(id)))
             {
-                get_thread_id_data(nextid)
-                    ->get_scheduler_base()
+                get_thread_data_scheduler(get_thread_id_data(nextid))
                     ->schedule_thread(get_thread_id_data(nextid),
                         threads::thread_schedule_hint());
                 statex = self.yield(threads::thread_result_type(
@@ -579,11 +578,10 @@ namespace hpx { namespace this_thread {
             // We might need to dispatch 'nextid' to it's correct scheduler
             // only if our current scheduler is the same, we should yield the id
             if (nextid &&
-                get_thread_id_data(nextid)->get_scheduler_base() !=
-                    get_thread_id_data(id)->get_scheduler_base())
+                get_thread_data_scheduler(get_thread_id_data(nextid)) !=
+                    get_thread_data_scheduler(get_thread_id_data(id)))
             {
-                get_thread_id_data(nextid)
-                    ->get_scheduler_base()
+                get_thread_data_scheduler(get_thread_id_data(nextid))
                     ->schedule_thread(get_thread_id_data(nextid),
                         threads::thread_schedule_hint());
                 statex = self.yield(threads::thread_result_type(

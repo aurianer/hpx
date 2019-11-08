@@ -152,7 +152,7 @@ namespace hpx { namespace threads { namespace detail
                             "set state for active thread", priority);
 
                         create_work(
-                            get_thread_id_data(thrd)->get_scheduler_base(),
+                            get_thread_data_scheduler(get_thread_id_data(thrd)),
                             data, pending, ec);
 
                         if (&ec != &throws)
@@ -270,11 +270,11 @@ namespace hpx { namespace threads { namespace detail
             // round robin queuing.
 
             auto thrd_data = get_thread_id_data(thrd);
-            thrd_data->get_scheduler_base()->schedule_thread(thrd_data,
+            get_thread_data_scheduler(thrd_data)->schedule_thread(thrd_data,
                 schedulehint, false, thrd_data->get_priority());
             // NOTE: Don't care if the hint is a NUMA hint, just want to wake up
             // a thread.
-            thrd_data->get_scheduler_base()->do_some_work(schedulehint.hint);
+            get_thread_data_scheduler(thrd_data)->do_some_work(schedulehint.hint);
         }
 
         if (&ec != &throws)

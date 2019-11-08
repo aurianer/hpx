@@ -490,12 +490,12 @@ namespace hpx { namespace threads { namespace detail
                             }
                             else
                             {
-                                next->get_scheduler_base()->schedule_thread(
+                                get_thread_data_scheduler(next)->schedule_thread(
                                     next,
                                     threads::thread_schedule_hint(
                                         static_cast<std::int16_t>(num_thread)),
                                     true);
-                                next->get_scheduler_base()->do_some_work(
+                                get_thread_data_scheduler(next)->do_some_work(
                                     num_thread);
                             }
                         }
@@ -608,7 +608,7 @@ namespace hpx { namespace threads { namespace detail
                         running, thrd, enable_stealing)))
             {
                 tfunc_time_wrapper tfunc_time_collector(idle_rate);
-                HPX_ASSERT(thrd->get_scheduler_base() == &scheduler);
+                HPX_ASSERT(get_thread_data_scheduler(thrd) == &scheduler);
 
                 idle_loop_count = params.max_idle_loop_count_;
                 ++busy_loop_count;

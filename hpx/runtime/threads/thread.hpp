@@ -54,7 +54,7 @@ namespace hpx
         {
             auto thrd_data = threads::get_self_id_data();
             HPX_ASSERT(thrd_data);
-            start_thread(thrd_data->get_scheduler_base()->get_parent_pool(),
+            start_thread(get_thread_data_scheduler(thrd_data)->get_parent_pool(),
                 util::deferred_call(std::forward<F>(f)));
         }
 
@@ -63,7 +63,7 @@ namespace hpx
         {
             auto thrd_data = threads::get_self_id_data();
             HPX_ASSERT(thrd_data);
-            start_thread(thrd_data->get_scheduler_base()->get_parent_pool(),
+            start_thread(get_thread_data_scheduler(thrd_data)->get_parent_pool(),
                 util::deferred_call(
                     std::forward<F>(f), std::forward<Ts>(vs)...));
         }

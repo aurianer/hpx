@@ -353,7 +353,7 @@ void measure_function_futures_create_thread(std::uint64_t count, bool csv)
 {
     hpx::lcos::local::latch l(count);
 
-    auto const sched = hpx::threads::get_self_id_data()->get_scheduler_base();
+    auto const sched = get_thread_data_scheduler(hpx::threads::get_self_id_data());
     auto func = [&l]() {
         null_function();
         l.count_down(1);
@@ -388,7 +388,7 @@ void measure_function_futures_create_thread_hierarchical_placement(
 {
     hpx::lcos::local::latch l(count);
 
-    auto sched = hpx::threads::get_self_id_data()->get_scheduler_base();
+    auto sched = get_thread_data_scheduler(hpx::threads::get_self_id_data());
     auto const func = [&l]() {
         null_function();
         l.count_down(1);

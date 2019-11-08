@@ -66,6 +66,8 @@ namespace hpx { namespace threads {
     /// implemented by the thread-manager.
     class HPX_EXPORT thread_data
     {
+    private:
+        using scheduler_base_repr = void*;
     public:
         thread_data(thread_data const&) = delete;
         thread_data(thread_data&&) = delete;
@@ -456,7 +458,7 @@ namespace hpx { namespace threads {
         void run_thread_exit_callbacks();
         void free_thread_exit_callbacks();
 
-        policies::scheduler_base* get_scheduler_base() const noexcept
+        scheduler_base_repr get_scheduler_base() const noexcept
         {
             return scheduler_base_;
         }
@@ -557,7 +559,7 @@ namespace hpx { namespace threads {
         std::forward_list<util::function_nonser<void()>> exit_funcs_;
 
         // reference to scheduler which created/manages this thread
-        policies::scheduler_base* scheduler_base_;
+        scheduler_base_repr scheduler_base_;
 
         std::ptrdiff_t stacksize_;
 

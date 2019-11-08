@@ -1024,7 +1024,7 @@ namespace hpx { namespace threads { namespace policies { namespace example {
             }
             if (result)
             {
-                HPX_ASSERT(thrd->get_scheduler_base() == this);
+                HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
                 LOG_CUSTOM_MSG("got next thread "
                     << "queue " << decnumber(thread_num) << "domain "
                     << decnumber(domain_num) << "desc " << THREAD_DESC(thrd));
@@ -1037,7 +1037,7 @@ namespace hpx { namespace threads { namespace policies { namespace example {
             threads::thread_schedule_hint schedulehint, bool allow_fallback,
             thread_priority priority = thread_priority_normal) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
 
             std::size_t thread_num = 0;
             std::size_t domain_num = 0;
@@ -1147,7 +1147,7 @@ namespace hpx { namespace threads { namespace policies { namespace example {
             threads::thread_schedule_hint schedulehint, bool allow_fallback,
             thread_priority priority = thread_priority_normal) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
 
             std::size_t thread_num = 0;
             std::size_t domain_num = 0;
@@ -1259,7 +1259,7 @@ namespace hpx { namespace threads { namespace policies { namespace example {
         void destroy_thread(
             threads::thread_data* thrd, std::int64_t& busy_count) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
             thrd->get_queue<thread_queue_type>().destroy_thread(
                 thrd, busy_count);
         }

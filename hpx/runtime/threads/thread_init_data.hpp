@@ -11,7 +11,6 @@
 #include <hpx/config.hpp>
 #include <hpx/runtime/threads/thread_data_fwd.hpp>
 #include <hpx/coroutines/thread_enums.hpp>
-#include <hpx/runtime/threads_fwd.hpp>
 #include <hpx/util/thread_description.hpp>
 #if defined(HPX_HAVE_APEX)
 #include <hpx/util/apex.hpp>
@@ -29,6 +28,9 @@ namespace hpx { namespace threads
     ///////////////////////////////////////////////////////////////////////////
     class thread_init_data
     {
+    private:
+        using scheduler_base_repr = void*;
+
     public:
         thread_init_data()
           : func(),
@@ -97,7 +99,7 @@ namespace hpx { namespace threads
                 thread_priority priority_ = thread_priority_normal,
                 thread_schedule_hint os_thread = thread_schedule_hint(),
                 std::ptrdiff_t stacksize_ = HPX_SMALL_STACK_SIZE,
-                policies::scheduler_base* scheduler_base_ = nullptr)
+                scheduler_base_repr scheduler_base_ = nullptr)
           : func(std::forward<F>(f)),
 #if defined(HPX_HAVE_THREAD_DESCRIPTION)
             description(desc),
@@ -138,7 +140,7 @@ namespace hpx { namespace threads
         thread_schedule_hint schedulehint;
         std::ptrdiff_t stacksize;
 
-        policies::scheduler_base* scheduler_base;
+        scheduler_base_repr scheduler_base;
     };
 }}
 

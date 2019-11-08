@@ -261,7 +261,7 @@ namespace hpx { namespace threads {
                 previous_state_val == pending_boost))
         {
             auto* data = get_thread_id_data(id);
-            auto scheduler = data->get_scheduler_base();
+            auto scheduler = get_thread_data_scheduler(data);
             auto hint = thread_schedule_hint();
             scheduler->schedule_thread(data, hint, true, data->get_priority());
             // Wake up scheduler

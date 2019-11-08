@@ -773,7 +773,7 @@ namespace hpx { namespace threads { namespace policies {
             }
             if (result)
             {
-                HPX_ASSERT(thrd->get_scheduler_base() == this);
+                HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
             }
             return result;
         }
@@ -784,7 +784,7 @@ namespace hpx { namespace threads { namespace policies {
             bool allow_fallback,
             thread_priority priority = thread_priority_normal) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
 
             std::size_t thread_num = 0;
             std::size_t domain_num = 0;
@@ -876,7 +876,7 @@ namespace hpx { namespace threads { namespace policies {
             bool allow_fallback,
             thread_priority priority = thread_priority_normal) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
 
             std::size_t thread_num = 0;
             std::size_t domain_num = 0;
@@ -968,7 +968,7 @@ namespace hpx { namespace threads { namespace policies {
         void destroy_thread(
             threads::thread_data* thrd, std::int64_t& busy_count) override
         {
-            HPX_ASSERT(thrd->get_scheduler_base() == this);
+            HPX_ASSERT(get_thread_data_scheduler(thrd) == this);
             thrd->get_queue<thread_queue_type>().destroy_thread(thrd, busy_count);
         }
 

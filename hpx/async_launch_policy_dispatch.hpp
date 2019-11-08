@@ -185,8 +185,8 @@ namespace hpx { namespace detail
                 policy.priority(), threads::thread_stacksize_default, hint);
             threads::thread_id_type tid_self = threads::get_self_id();
             if (tid && tid_self &&
-                get_thread_id_data(tid)->get_scheduler_base() ==
-                    get_thread_id_data(tid_self)->get_scheduler_base())
+                get_thread_data_scheduler(get_thread_id_data(tid)) ==
+                    get_thread_data_scheduler(get_thread_id_data(tid_self)))
             {
                 // yield_to
                 hpx::this_thread::suspend(threads::pending, tid,

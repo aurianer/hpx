@@ -68,8 +68,8 @@ namespace hpx { namespace parallel { namespace execution { namespace detail {
 
             // make sure this thread is executed last
             if (tid && tid_self &&
-                get_thread_id_data(tid)->get_scheduler_base() ==
-                    get_thread_id_data(tid_self)->get_scheduler_base())
+                get_thread_data_scheduler(get_thread_id_data(tid)) ==
+                    get_thread_data_scheduler(get_thread_id_data(tid_self)))
             {
                 // yield_to(tid)
                 hpx::this_thread::suspend(threads::pending, tid,

@@ -13,7 +13,7 @@
 #include <hpx/format.hpp>
 #include <hpx/runtime/threads/policies/scheduler_mode.hpp>
 #include <hpx/runtime/threads/policies/thread_queue_init_parameters.hpp>
-#include <hpx/runtime/threads/thread_data_fwd.hpp>
+#include <hpx/runtime/threads/thread_data.hpp>
 #include <hpx/runtime/threads/thread_init_data.hpp>
 #include <hpx/runtime/threads/thread_pool_base.hpp>
 #include <hpx/state.hpp>
@@ -310,7 +310,15 @@ namespace hpx { namespace threads { namespace policies {
         std::shared_ptr<coroutines::detail::tss_storage> thread_data_;
 #endif
     };
-}}}    // namespace hpx::threads::policies
+
+}     // namespace policies
+
+    HPX_CONSTEXPR policies::scheduler_base* get_thread_data_scheduler(thread_data const* data)
+    {
+        return static_cast<policies::scheduler_base*>(data->get_scheduler_base());
+    }
+
+}}    // namespace hpx::threads
 
 #include <hpx/config/warnings_suffix.hpp>
 
