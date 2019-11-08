@@ -289,7 +289,47 @@ namespace hpx { namespace util
 
     HPX_EXPORT std::ostream& operator<<(std::ostream&, thread_description const&);
     HPX_EXPORT std::string as_string(thread_description const& desc);
-}}
+
+}}  // namespace hpx::util
+
+namespace hpx { namespace threads {
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// The function get_thread_description is part of the thread related API
+    /// allows to query the description of one of the threads known to the
+    /// thread-manager.
+    ///
+    /// \param id         [in] The thread id of the thread being queried.
+    /// \param ec         [in,out] this represents the error status on exit,
+    ///                   if this is pre-initialized to \a hpx#throws
+    ///                   the function will throw on error instead.
+    ///
+    /// \returns          This function returns the description of the
+    ///                   thread referenced by the \a id parameter. If the
+    ///                   thread is not known to the thread-manager the return
+    ///                   value will be the string "<unknown>".
+    ///
+    /// \note             As long as \a ec is not pre-initialized to
+    ///                   \a hpx#throws this function doesn't
+    ///                   throw but returns the result code using the
+    ///                   parameter \a ec. Otherwise it throws an instance
+    ///                   of hpx#exception.
+    HPX_API_EXPORT util::thread_description get_thread_description(
+        thread_id_type const& id, error_code& ec = throws);
+    HPX_API_EXPORT util::thread_description set_thread_description(
+        thread_id_type const& id,
+        util::thread_description const& desc = util::thread_description(),
+        error_code& ec = throws);
+
+    HPX_API_EXPORT util::thread_description get_thread_lco_description(
+        thread_id_type const& id, error_code& ec = throws);
+    HPX_API_EXPORT util::thread_description set_thread_lco_description(
+        thread_id_type const& id,
+        util::thread_description const& desc = util::thread_description(),
+        error_code& ec = throws);
+
+
+}   // namespace hpx::threads
 
 #endif
 

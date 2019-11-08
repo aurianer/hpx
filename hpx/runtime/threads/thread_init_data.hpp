@@ -22,6 +22,7 @@
 
 namespace hpx { namespace threads
 {
+
     HPX_API_EXPORT std::ptrdiff_t get_default_stack_size();
     HPX_API_EXPORT std::ptrdiff_t get_stack_size(thread_stacksize);
 

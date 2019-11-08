@@ -85,4 +85,68 @@ namespace hpx { namespace util
         }
 #endif
     }
-}}
+}}  // namespace hpx::util
+
+namespace hpx { namespace threads {
+    ///////////////////////////////////////////////////////////////////////////
+    /// The get_thread_description function is part of the thread related API and
+    /// allows to query the description of one of the thread id
+    util::thread_description get_thread_description(
+        thread_id_type const& id, error_code& ec)
+    {
+        return id ? get_thread_id_data(id)->get_description() :
+                    util::thread_description("<unknown>");
+    }
+
+    util::thread_description set_thread_description(thread_id_type const& id,
+        util::thread_description const& desc, error_code& ec)
+    {
+        if (HPX_UNLIKELY(!id))
+        {
+            HPX_THROWS_IF(ec, null_thread_id,
+                "hpx::threads::set_thread_description",
+                "null thread id encountered");
+            return util::thread_description();
+        }
+        if (&ec != &throws)
+            ec = make_success_code();
+
+        return get_thread_id_data(id)->set_description(desc);
+    }
+
+    util::thread_description get_thread_lco_description(
+        thread_id_type const& id, error_code& ec)
+    {
+        if (HPX_UNLIKELY(!id))
+        {
+            HPX_THROWS_IF(ec, null_thread_id,
+                "hpx::threads::get_thread_lco_description",
+                "null thread id encountered");
+            return nullptr;
+        }
+
+        if (&ec != &throws)
+            ec = make_success_code();
+
+        return get_thread_id_data(id)->get_lco_description();
+    }
+
+    util::thread_description set_thread_lco_description(
+        thread_id_type const& id, util::thread_description const& desc,
+        error_code& ec)
+    {
+        if (HPX_UNLIKELY(!id))
+        {
+            HPX_THROWS_IF(ec, null_thread_id,
+                "hpx::threads::set_thread_lco_description",
+                "null thread id encountered");
+            return nullptr;
+        }
+
+        if (&ec != &throws)
+            ec = make_success_code();
+
+        return get_thread_id_data(id)->set_lco_description(desc);
+    }
+
+}}  // namespace hpx::threads
