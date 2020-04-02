@@ -36,6 +36,7 @@ set(HPX_CANDIDATE_LIBS
   distributed_executors
   errors
   execution
+  executors
   filesystem
   format
   functional
