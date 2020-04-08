@@ -106,6 +106,7 @@ add_hpx_module(include
     hpx_config
     hpx_errors
     hpx_format
+    hpx_executors
     hpx_local_lcos
     hpx_naming_base
     hpx_pack_traversal
