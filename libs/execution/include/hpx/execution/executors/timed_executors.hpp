@@ -18,8 +18,6 @@
 #include <hpx/type_support/decay.hpp>
 #include <hpx/type_support/detail/wrap_int.hpp>
 
-#include <hpx/executors/execution_policy.hpp>
-#include <hpx/executors/parallel_executor.hpp>
 #include <hpx/executors/sequenced_executor.hpp>
 
 #include <chrono>
