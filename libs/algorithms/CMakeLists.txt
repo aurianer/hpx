@@ -148,6 +148,7 @@ add_hpx_module(algorithms
     hpx_datastructures
     hpx_errors
     hpx_execution
+    hpx_executors
     hpx_format
     hpx_iterator_support
     hpx_functional

@@ -17,7 +17,7 @@
 #include <hpx/async_combinators/wait_all.hpp>
 #include <hpx/errors.hpp>
 
-#include <hpx/execution/execution_policy.hpp>
+#include <hpx/executors/execution_policy.hpp>
 #include <hpx/execution/executors/execution.hpp>
 #include <hpx/execution/executors/execution_parameters.hpp>
 #include <hpx/parallel/util/detail/algorithm_result.hpp>
