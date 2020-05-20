@@ -90,29 +90,34 @@ namespace hpx { namespace util {
         };
     }    // namespace detail
 
-    // Iterator adaptor
-    //
-    // The idea is that when the user needs
-    // to fiddle with the reference type it is highly likely that the
-    // iterator category has to be adjusted as well.  Any of the
-    // following four template arguments may be omitted or explicitly
-    // replaced by void.
-    //
-    //   Value - if supplied, the value_type of the resulting iterator, unless
-    //      const. If const, a conforming compiler strips const-ness for the
-    //      value_type. If not supplied, iterator_traits<Base>::value_type is used
-    //
-    //   Category - the traversal category of the resulting iterator. If not
-    //      supplied, iterator_traversal<Base>::type is used.
-    //
-    //   Reference - the reference type of the resulting iterator, and in
-    //      particular, the result type of operator*(). If not supplied but
-    //      Value is supplied, Value& is used. Otherwise
-    //      iterator_traits<Base>::reference is used.
-    //
-    //   Difference - the difference_type of the resulting iterator. If not
-    //      supplied, iterator_traits<Base>::difference_type is used.
-    //
+    ///////////////////////////////////////////////////////////////////////////
+    /// \class iterator_adaptor
+    ///
+    /// (Documentation from Boost)
+    /// The idea is that when the user needs to fiddle with the reference type
+    /// it is highly likely that the iterator category has to be adjusted as
+    /// well.  Any of the following four template arguments may be omitted or
+    /// explicitly replaced by void.
+    ///
+    /// \tparam  Value      If supplied, the value_type of the resulting
+    ///                     iterator, unless const. If const, a conforming
+    ///                     compiler strips const-ness for the value_type. If
+    ///                     not supplied, iterator_traits<Base>::value_type is
+    ///                     used.
+    ///
+    /// \tparam Category    The traversal category of the resulting iterator.
+    ///                     If not supplied, iterator_traversal<Base>::type is
+    ///                     used.
+    ///
+    /// \tparam Reference   The reference type of the resulting iterator, and
+    ///                     in particular, the result type of operator*(). If
+    ///                     not supplied but Value is supplied, Value& is used.
+    ///                     Otherwise iterator_traits<Base>::reference is used.
+    ///
+    /// \tparam Difference  The difference_type of the resulting iterator. If
+    ///                     not supplied, iterator_traits<Base>::difference_type
+    ///                     is used.
+    ///
     template <typename Derived, typename Base, typename Value = void,
         typename Category = void, typename Reference = void,
         typename Difference = void, typename Pointer = void>
