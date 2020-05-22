@@ -8,7 +8,7 @@ include(HPX_ExportTargets)
 
 function(add_hpx_module name)
   # Retrieve arguments
-  set(options DEPRECATION_WARNINGS FORCE_LINKING_GEN CUDA CONFIG_FILES)
+  set(options DEPRECATION_WARNINGS FORCE_LINKING_GEN CUDA CONFIG_FILES HIP)
   # Compatibility needs to be on/off to allow 3 states : ON/OFF and disabled
   set(one_value_args COMPATIBILITY_HEADERS GLOBAL_HEADER_GEN)
   set(multi_value_args SOURCES HEADERS COMPAT_HEADERS DEPENDENCIES
@@ -207,6 +207,16 @@ function(add_hpx_module name)
   if(${name}_CUDA AND HPX_WITH_CUDA)
     # cmake-format: off
     cuda_add_library(
+      hpx_${name} STATIC
+      ${sources} ${force_linking_source} ${config_entries_source}
+      ${headers} ${force_linking_header} ${generated_headers} ${compat_headers}
+    )
+    # cmake-format: on
+  elseif(${name}_HIP AND NOT HPX_WITH_CUDA AND HPX_WITH_HIP)
+    set(all_sources ${sources} ${force_linking_source} ${config_entries_source})
+    set_source_files_properties(${all_sources} PROPERTIES HIP_SOURCE_PROPERTY_FORMAT 1)
+    # cmake-format: off
+    hip_add_library(
       hpx_${name} STATIC
       ${sources} ${force_linking_source} ${config_entries_source}
       ${headers} ${force_linking_header} ${generated_headers} ${compat_headers}

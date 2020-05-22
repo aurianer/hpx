@@ -8,15 +8,16 @@
 function(add_hpx_component name)
   # retrieve arguments
   set(options
+      AUTOGLOB
       EXCLUDE_FROM_ALL
+      HIP
       INSTALL_HEADERS
       INTERNAL_FLAGS
       NOEXPORT
-      AUTOGLOB
-      STATIC
       PLUGIN
       PREPEND_SOURCE_ROOT
       PREPEND_HEADER_ROOT
+      STATIC
   )
   set(one_value_args
       INI
@@ -247,6 +248,12 @@ function(add_hpx_component name)
 
   if(HPX_WITH_CUDA AND NOT HPX_WITH_CUDA_CLANG)
     cuda_add_library(
+      ${name}_component ${${name}_lib_linktype} ${exclude_from_all}
+      ${${name}_SOURCES} ${${name}_HEADERS} ${${name}_AUXILIARY}
+    )
+  elseif(${name}_HIP AND NOT HPX_WITH_CUDA AND HPX_WITH_HIP)
+    set_source_files_properties(${${name}_SOURCES} PROPERTIES HIP_SOURCE_PROPERTY_FORMAT 1)
+    hip_add_library(
       ${name}_component ${${name}_lib_linktype} ${exclude_from_all}
       ${${name}_SOURCES} ${${name}_HEADERS} ${${name}_AUXILIARY}
     )

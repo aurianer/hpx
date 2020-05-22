@@ -8,7 +8,7 @@
 function(add_hpx_executable name)
   # retrieve arguments
   set(options EXCLUDE_FROM_ALL EXCLUDE_FROM_DEFAULT_BUILD AUTOGLOB
-              INTERNAL_FLAGS NOLIBS NOHPX_INIT
+      HIP INTERNAL_FLAGS NOLIBS NOHPX_INIT
   )
   set(one_value_args
       INI
@@ -190,6 +190,11 @@ function(add_hpx_executable name)
 
   if(HPX_WITH_CUDA AND NOT HPX_WITH_CUDA_CLANG)
     cuda_add_executable(
+      ${name} ${${name}_SOURCES} ${${name}_HEADERS} ${${name}_AUXILIARY}
+    )
+  elseif(${name}_HIP AND NOT HPX_WITH_CUDA AND HPX_WITH_HIP)
+    set_source_files_properties(${${name}_SOURCES} PROPERTIES HIP_SOURCE_PROPERTY_FORMAT 1)
+    hip_add_executable(
       ${name} ${${name}_SOURCES} ${${name}_HEADERS} ${${name}_AUXILIARY}
     )
   else()

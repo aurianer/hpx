@@ -8,14 +8,15 @@
 function(add_hpx_library name)
   # retrieve arguments
   set(options
-      EXCLUDE_FROM_ALL
-      INTERNAL_FLAGS
-      NOLIBS
-      NOEXPORT
       AUTOGLOB
-      STATIC
-      PLUGIN
+      EXCLUDE_FROM_ALL
+      HIP
+      INTERNAL_FLAGS
+      NOEXPORT
+      NOLIBS
       NONAMEPREFIX
+      PLUGIN
+      STATIC
   )
   set(one_value_args
       FOLDER
@@ -214,6 +215,12 @@ function(add_hpx_library name)
 
   if(HPX_WITH_CUDA AND NOT HPX_WITH_CUDA_CLANG)
     cuda_add_library(
+      ${name} ${${name}_linktype} ${exclude_from_all} ${${name}_SOURCES}
+      ${${name}_HEADERS} ${${name}_AUXILIARY}
+    )
+  elseif(${name}_HIP AND NOT HPX_WITH_CUDA AND HPX_WITH_HIP)
+    set_source_files_properties(${${name}_SOURCES} PROPERTIES HIP_SOURCE_PROPERTY_FORMAT 1)
+    hip_add_library(
       ${name} ${${name}_linktype} ${exclude_from_all} ${${name}_SOURCES}
       ${${name}_HEADERS} ${${name}_AUXILIARY}
     )

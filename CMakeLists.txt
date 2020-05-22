@@ -483,6 +483,9 @@ hpx_option(
   ADVANCED
 )
 
+# For now the default is hip-clang
+hpx_option(HPX_WITH_HIP BOOL "Enable HIP support (default: OFF)" OFF ADVANCED)
+
 # ##############################################################################
 # HPX datapar configuration
 # ##############################################################################
@@ -2117,6 +2120,7 @@ include(HPX_SetupPapi)
 include(HPX_SetupHpxmp)
 include(HPX_SetupGooglePerfTools)
 include(HPX_SetupValgrind)
+include(HPX_SetupHIP)
 
 if(HPX_WITH_SANITIZERS)
   hpx_add_config_define(HPX_HAVE_SANITIZERS)
