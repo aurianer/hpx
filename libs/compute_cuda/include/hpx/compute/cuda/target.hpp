@@ -11,7 +11,7 @@
 
 #include <hpx/config.hpp>
 
-#if defined(HPX_HAVE_CUDA)
+#if defined(HPX_HAVE_CUDA) || defined(HPX_HAVE_HIP)
 #include <hpx/allocator_support/allocator_deleter.hpp>
 #include <hpx/assertion.hpp>
 #include <hpx/compute/cuda/get_targets.hpp>
@@ -23,7 +23,7 @@
 
 #include <hpx/serialization/serialization_fwd.hpp>
 
-#include <cuda_runtime.h>
+#include <hpx/compute/cuda/custom_gpu_api.hpp>
 
 #include <cstddef>
 #include <memory>
