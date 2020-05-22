@@ -13,6 +13,7 @@ if(HPX_WITH_CUDA OR HPX_WITH_HIP)
       hpx/compute/cuda/allocator.hpp
       hpx/compute/cuda/concurrent_executor.hpp
       hpx/compute/cuda/concurrent_executor_parameters.hpp
+      hpx/compute/cuda/custom_gpu_api.hpp
       hpx/compute/cuda/default_executor.hpp
       hpx/compute/cuda/default_executor_parameters.hpp
       hpx/compute/cuda/detail/launch.hpp
@@ -34,7 +35,7 @@ if(HPX_WITH_CUDA OR HPX_WITH_HIP)
   set(compute_cuda_compat_headers)
 
   set(compute_cuda_sources cuda_target.cpp get_cuda_targets.cpp)
-endif()
+endif(HPX_WITH_CUDA OR HPX_WITH_HIP)
 
 include(HPX_AddModule)
 add_hpx_module(

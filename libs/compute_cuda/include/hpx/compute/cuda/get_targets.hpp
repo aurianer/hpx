@@ -10,7 +10,7 @@
 
 #include <hpx/config.hpp>
 
-#if defined(HPX_HAVE_CUDA)
+#if defined(HPX_HAVE_CUDA) || defined(HPX_HAVE_HIP)
 #include <hpx/modules/futures.hpp>
 #include <hpx/runtime/naming_fwd.hpp>
 
