@@ -16,6 +16,10 @@ if(HPX_WITH_CUDA)
   set(transform_compute_CUDA On)
 endif()
 
+if (HPX_WITH_HIP)
+  set(tests dummy_hip)
+endif(HPX_WITH_HIP)
+
 foreach(test ${tests})
   if(${${test}_CUDA})
     set(sources ${test}.cu)

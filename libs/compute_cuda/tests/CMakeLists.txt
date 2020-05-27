@@ -7,7 +7,7 @@
 include(HPX_Message)
 include(HPX_Option)
 
-if(NOT HPX_WITH_CUDA)
+if(NOT HPX_WITH_CUDA AND NOT HPX_WITH_HIP)
   return()
 endif()
 
