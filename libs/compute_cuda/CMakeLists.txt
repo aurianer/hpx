@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-if(HPX_WITH_CUDA)
+if(HPX_WITH_CUDA OR HPX_WITH_HIP)
   set(compute_cuda_headers
       hpx/compute/cuda/allocator.hpp
       hpx/compute/cuda/concurrent_executor.hpp
