@@ -1,0 +1,51 @@
+#!groovy
+
+pipeline {
+    agent {
+        node {
+            label 'ssl_daintvm1'
+        }
+    }
+    environment {
+        SPACK_ROOT = '/apps/daint/SSL/HPX/spack'
+        GITHUB_TOKEN = credentials('97b30156-2f6f-47fc-94eb-68044d95ec50')
+    }
+    stages {
+        stage('checkout') {
+            steps {
+                dir('hpx') {
+                    checkout scm
+                    echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+                }
+            }
+        }
+        stage('build') {
+            matrix {
+                axes {
+                    axis {
+                        name 'configuration_name'
+                        values 'gcc-newest', 'gcc-oldest', 'gcc-cuda'
+                    }
+                }
+                stages {
+                    stage('build') {
+                        steps {
+                            dir('hpx') {
+                                sh '''
+                                #!/bin/bash -l
+                                .jenkins/cscs/entry.sh
+                                '''
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/jenkins-hpx-*', fingerprint: true
+        }
+    }
+}
