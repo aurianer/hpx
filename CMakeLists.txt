@@ -1943,7 +1943,12 @@ else()
   endif()
 
   # Silence warning about __sync_fetch_and_nand changing semantics
-  hpx_add_compile_flag_if_available(-Wno-sync-nand LANGUAGES CXX C)
+  # TODO: find for which exact version of the compiler it is not available
+  if (HPX_WITH_HIP OR HPX_WITH_HIP_CLANG)
+    set(HIP_FLAG HIP)
+    hpx_add_compile_flag_if_available(-Wno-non-c-typedef-for-linkage LANGUAGES CXX C)
+  endif(HPX_WITH_HIP OR HPX_WITH_HIP_CLANG)
+  hpx_add_compile_flag_if_available(-Wno-sync-nand ${HIP_FLAG} LANGUAGES CXX C)
 
   # Silence warnings about deleting polymorphic objects with non-virtual dtors.
   # These come from within Boost.
