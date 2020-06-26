@@ -14,11 +14,33 @@
 
     #include <hip/hip_runtime.h>
 
+    #define cudaDeviceProp hipDeviceProp
     #define cudaError_t hipError_t
+    #define cudaFree hipFree
+    #define cudaGetDevice hipGetDevice
+    #define cudaGetDeviceCount hipGetDeviceCount
+    #define cudaGetDeviceProperties hipGetDeviceProperties
     #define cudaGetErrorString hipGetErrorString
+    #define cudaGetLastError hipGetLastError
+    #define cudaGetParameterBuffer hipGetParameterBuffer
+    #define cudaLaunchDevice hipLaunchDevice
+    #define cudaLaunchKernel hipLaunchKernel
     #define cudaMalloc hipMalloc
-    #define cudaStreamAddCallback hipStreamAddCallback
+    #define cudaMemcpy hipMemcpy
+    #define cudaMemcpyAsync hipMemcpyAsync
+    #define cudaMemcpyDeviceToDevice hipMemcpyDeviceToDevice
+    #define cudaMemcpyDeviceToHost hipMemcpyDeviceToHost
+    #define cudaMemcpyHostToDevice hipMemcpyHostToDevice
+    #define cudaMemGetInfo hipMemGetInfo
+    #define cudaMemsetAsync hipMemsetAsync
+    #define cudaSetDevice hipSetDevice
     #define cudaStream_t hipStream_t
+    #define cudaStreamAddCallback hipStreamAddCallback
+    #define cudaStreamCreate hipStreamCreate
+    #define cudaStreamCreateWithFlags hipStreamCreateWithFlags
+    #define cudaStreamDestroy hipStreamDestroy
+    #define cudaStreamNonBlocking hipStreamNonBlocking
+    #define cudaStreamSynchronize hipStreamSynchronize
     #define cudaSuccess hipSuccess
 
 #endif
