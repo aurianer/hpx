@@ -174,7 +174,8 @@ function(hpx_setup_target target)
   if(NOT target_NOLIBS)
     target_link_libraries(
       ${target} ${__tll_public} $<TARGET_NAME_IF_EXISTS:hpx>
-      $<TARGET_NAME_IF_EXISTS:HPX::hpx>
+      $<TARGET_NAME_IF_EXISTS:HPX::hpx> $<TARGET_NAME_IF_EXISTS:wrap_main>
+      $<TARGET_NAME_IF_EXISTS:HPX::wrap_main>
     )
     hpx_handle_component_dependencies(target_COMPONENT_DEPENDENCIES)
     target_link_libraries(
