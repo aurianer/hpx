@@ -13,6 +13,7 @@ set(subdirs
     balancing
     cancelable_action
     future_reduce
+    gtest
     heartbeat
     jacobi
     jacobi_smp
