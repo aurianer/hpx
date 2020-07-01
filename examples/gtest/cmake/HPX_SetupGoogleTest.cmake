@@ -10,4 +10,10 @@ fetchcontent_declare(
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG release-1.10.0
 )
-fetchcontent_makeavailable(googletest)
+# Only avail in CMake 3.14, would replace the 5 lines below
+# fetchcontent_makeavailable(googletest)
+fetchcontent_getproperties(googletest)
+if(NOT googletest_POPULATED)
+  fetchcontent_populate(googletest)
+  add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+endif()
