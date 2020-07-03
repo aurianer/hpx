@@ -137,6 +137,20 @@ create_cmake_test(
   "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${HPX_PACKAGE_NAME}" MACROS
 )
 
+# Google test emulation
+create_cmake_test(
+  cmake_build_dir_gtest_emulation_test
+  "${PROJECT_BINARY_DIR}/lib/cmake/${HPX_PACKAGE_NAME}"
+  "examples/gtest_emulation" TARGETS
+)
+
+create_cmake_test(
+  cmake_install_dir_gtest_emulation_test
+  "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${HPX_PACKAGE_NAME}"
+  "examples/gtest_emulation" TARGETS
+)
+
+# PkgConfig
 if(NOT MSVC)
   find_package(PkgConfig)
   if(PKGCONFIG_FOUND)
@@ -151,8 +165,13 @@ if(NOT MSVC)
 endif()
 
 set(build_systems cmake)
-set(cmake_tests build_dir_targets build_dir_macros install_dir_targets
-                install_dir_macros
+set(cmake_tests
+    build_dir_targets
+    install_dir_targets
+    build_dir_macros
+    install_dir_macros
+    build_dir_gtest_emulation
+    install_dir_gtest_emulation
 )
 if(NOT CMAKE_TOOLCHAIN_FILE
    AND PKGCONFIG_FOUND
