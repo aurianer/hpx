@@ -1590,7 +1590,7 @@ int main(int argc, char* argv[])
     options_description cmdline("Usage: " HPX_APPLICATION_STRING " [options]");
 
     // We force this test to use several threads by default.
-    std::vector<std::string> const cfg = {"hpx.os_threads=all"};
+    std::vector<std::string> const cfg = {"hpx.os_threads=4"};
 
     // Initialize and run HPX
     return hpx::init(cmdline, argc, argv, cfg);
