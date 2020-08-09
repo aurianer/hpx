@@ -1,4 +1,5 @@
 //  Copyright (c) 2014-2016 Hartmut Kaiser
+//  Copyright (c) 2020 Giannis Gonidelis
 //
 //  SPDX-License-Identifier: BSL-1.0
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -63,8 +64,8 @@ void test_transform(ExPolicy policy, IteratorTag)
     auto result = hpx::parallel::transform(policy, iterator(std::begin(c)),
         iterator(std::end(c)), std::begin(d), add_one());
 
-    HPX_TEST(hpx::util::get<0>(result) == iterator(std::end(c)));
-    HPX_TEST(hpx::util::get<1>(result) == std::end(d));
+    HPX_TEST(result.in == iterator(std::end(c)));
+    HPX_TEST(result.out == std::end(d));
 
     // verify values
     std::size_t count = 0;
@@ -91,9 +92,9 @@ void test_transform_async(ExPolicy p, IteratorTag)
         iterator(std::end(c)), std::begin(d), add_one());
     f.wait();
 
-    hpx::util::tuple<iterator, base_iterator> result = f.get();
-    HPX_TEST(hpx::util::get<0>(result) == iterator(std::end(c)));
-    HPX_TEST(hpx::util::get<1>(result) == std::end(d));
+    auto result = f.get();
+    HPX_TEST(result.in == iterator(std::end(c)));
+    HPX_TEST(result.out == std::end(d));
 
     // verify values
     std::size_t count = 0;
