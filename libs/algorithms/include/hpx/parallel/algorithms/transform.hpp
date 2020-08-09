@@ -855,3 +855,52 @@ namespace hpx { namespace traits {
 #endif
 }}    // namespace hpx::traits
 #endif
+
+namespace hpx {
+    ///////////////////////////////////////////////////////////////////////////
+    // CPO for hpx::transform
+    HPX_INLINE_CONSTEXPR_VARIABLE struct transform_t final
+      : hpx::functional::tag<transform_t>
+    {
+    private:
+        // clang-format off
+        template <typename FwdIter1, typename FwdIter2,
+            typename F, HPX_CONCEPT_REQUIRES_(
+                hpx::traits::is_iterator<FwdIter1>::value &&
+                hpx::traits::is_iterator<FwdIter2>::value
+            )>
+        // clang-format on
+        friend FwdIter2 tag_invoke(hpx::transform_t, FwdIter1 first,
+            FwdIter1 last, FwdIter2 dest, F&& f)
+        {
+            return parallel::util::get_second_element(
+                parallel::v1::detail::transform_(hpx::parallel::execution::seq,
+                    first, last, dest, std::forward<F>(f),
+                    hpx::parallel::util::projection_identity(),
+                    std::false_type{}));
+        }
+
+        // clang-format off
+        template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
+            typename F, HPX_CONCEPT_REQUIRES_(
+                parallel::execution::is_execution_policy<ExPolicy>::value &&
+                hpx::traits::is_iterator<FwdIter1>::value &&
+                hpx::traits::is_iterator<FwdIter2>::value
+            )>
+        // clang-format on
+        friend typename parallel::util::detail::algorithm_result<ExPolicy,
+            FwdIter2>::type
+        tag_invoke(hpx::transform_t, ExPolicy&& policy, FwdIter1 first,
+            FwdIter1 last, FwdIter2 dest, F&& f)
+        {
+            typedef hpx::traits::is_segmented_iterator<FwdIter1> is_segmented;
+
+            return parallel::util::get_second_element(
+                parallel::v1::detail::transform_(std::forward<ExPolicy>(policy),
+                    first, last, dest, std::forward<F>(f),
+                    hpx::parallel::util::projection_identity(),
+                    is_segmented()));
+        }
+
+    } transform{};
+}    // namespace hpx
