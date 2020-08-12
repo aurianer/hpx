@@ -38,11 +38,13 @@ namespace hpx { namespace threads { namespace policies {
 #else
         using container_type = boost::lockfree::queue<T>;
 #endif
-
+        using tmp_container_type = std::array<T,
+            HPX_THREAD_QUEUE_MAX_ADD_NEW_COUNT>;
         using value_type = T;
         using reference = T&;
         using const_reference = T const&;
         using size_type = std::uint64_t;
+
 
         lockfree_fifo_backend(
             size_type initial_size = 0, size_type num_thread = size_type(-1))
@@ -66,6 +68,24 @@ namespace hpx { namespace threads { namespace policies {
 #else
             return queue_.pop(val);
 #endif
+        }
+
+        std::size_t pop_bulk(tmp_container_type& tasks, bool steal = true)
+        {
+            std::size_t count = 0;
+            while(count != HPX_THREAD_QUEUE_MAX_ADD_NEW_COUNT)
+            {
+#if defined(HPX_HAVE_CXX11_STD_ATOMIC_128BIT)
+                if(!queue_.pop_right(tasks[count]))
+#else
+                if(!queue_.pop(tasks[count]))
+#endif
+                {
+                    break;
+                }
+                count++;
+            }
+            return count;
         }
 
         bool empty()
