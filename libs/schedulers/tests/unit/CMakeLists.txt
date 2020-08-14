@@ -4,7 +4,12 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-set(tests schedule_last)
+set(tests
+  bulk_stealing
+  schedule_last
+  )
+
+set(future_overhead_bulk_PARAMETERS THREADS_PER_LOCALITY 4)
 
 # ##############################################################################
 foreach(test ${tests})
