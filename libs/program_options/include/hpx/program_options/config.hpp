@@ -23,7 +23,7 @@
 
 namespace hpx { namespace program_options {
 
-    using any = boost::any;
+    using any = boost::type_erasure::any;
     using boost::any_cast;
     template <typename T>
     using optional = boost::optional<T>;
