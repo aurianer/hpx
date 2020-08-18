@@ -418,7 +418,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
 
             template <typename ExPolicy, typename InIter1, typename InIter2,
                 typename OutIter, typename F, typename Proj1, typename Proj2>
-            static hpx::util::tuple<InIter1, InIter2, OutIter> sequential(
+            static util::in_in_out_result<InIter1, InIter2, OutIter> sequential(
                 ExPolicy&& policy, InIter1 first1, InIter1 last1,
                 InIter2 first2, OutIter dest, F&& f, Proj1&& proj1,
                 Proj2&& proj2)
@@ -432,7 +432,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
                 typename FwdIter3, typename F, typename Proj1, typename Proj2>
             static typename util::detail::algorithm_result<ExPolicy,
-                hpx::util::tuple<FwdIter1, FwdIter2, FwdIter3>>::type
+                util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
             parallel(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
                 FwdIter2 first2, FwdIter3 dest, F&& f, Proj1&& proj1,
                 Proj2&& proj2)
@@ -444,7 +444,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
                             std::forward<F>(f), std::forward<Proj1>(proj1),
                             std::forward<Proj2>(proj2));
 
-                    return get_iter_tuple(
+                    return parallel::util::detail::get_in_in_out_result(
                         util::foreach_partitioner<ExPolicy>::call(
                             std::forward<ExPolicy>(policy),
                             hpx::util::make_zip_iterator(first1, first2, dest),
@@ -452,18 +452,19 @@ namespace hpx { namespace parallel { inline namespace v1 {
                             util::projection_identity()));
                 }
 
+                using result_type =
+                    util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>;
+
                 return util::detail::algorithm_result<ExPolicy,
-                    hpx::util::tuple<FwdIter1, FwdIter2,
-                        FwdIter3>>::get(hpx::util::make_tuple(std::move(first1),
-                    std::move(first2), std::move(dest)));
+                    result_type>::get(result_type{
+                    std::move(first1), std::move(first2), std::move(dest)});
             }
         };
 
         template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
             typename FwdIter3, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-                tag::out(FwdIter3)>>::type
+            util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
         transform_(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
             FwdIter2 first2, FwdIter3 dest, F&& f, Proj1&& proj1, Proj2&& proj2,
             std::false_type)
@@ -476,20 +477,19 @@ namespace hpx { namespace parallel { inline namespace v1 {
                 "Requires at least forward iterator.");
 
             typedef execution::is_sequenced_execution_policy<ExPolicy> is_seq;
-            typedef hpx::util::tuple<FwdIter1, FwdIter2, FwdIter3> result_type;
+            typedef util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>
+                result_type;
 
-            return hpx::util::make_tagged_tuple<tag::in1, tag::in2, tag::out>(
-                detail::transform_binary<result_type>().call(
-                    std::forward<ExPolicy>(policy), is_seq(), first1, last1,
-                    first2, dest, std::forward<F>(f),
-                    std::forward<Proj1>(proj1), std::forward<Proj2>(proj2)));
+            return detail::transform_binary<result_type>().call(
+                std::forward<ExPolicy>(policy), is_seq(), first1, last1, first2,
+                dest, std::forward<F>(f), std::forward<Proj1>(proj1),
+                std::forward<Proj2>(proj2));
         }
 
         template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
             typename FwdIter3, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-                tag::out(FwdIter3)>>::type
+            util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
         transform_(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
             FwdIter2 first2, FwdIter3 dest, F&& f, Proj1&& proj1, Proj2&& proj2,
             std::true_type);
@@ -600,8 +600,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
                                     traits::projected<Proj1, FwdIter1>,
                                     traits::projected<Proj2, FwdIter2>>::value)>
     typename util::detail::algorithm_result<ExPolicy,
-        hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-            tag::out(FwdIter3)>>::type
+        util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
     transform(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
         FwdIter2 first2, FwdIter3 dest, F&& f, Proj1&& proj1 = Proj1(),
         Proj2&& proj2 = Proj2())
@@ -628,7 +627,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
 
             template <typename ExPolicy, typename InIter1, typename InIter2,
                 typename OutIter, typename F, typename Proj1, typename Proj2>
-            static hpx::util::tuple<InIter1, InIter2, OutIter> sequential(
+            static util::in_in_out_result<InIter1, InIter2, OutIter> sequential(
                 ExPolicy&& policy, InIter1 first1, InIter1 last1,
                 InIter2 first2, InIter2 last2, OutIter dest, F&& f,
                 Proj1&& proj1, Proj2&& proj2)
@@ -642,7 +641,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
                 typename FwdIter3, typename F, typename Proj1, typename Proj2>
             static typename util::detail::algorithm_result<ExPolicy,
-                hpx::util::tuple<FwdIter1, FwdIter2, FwdIter3>>::type
+                util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
             parallel(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
                 FwdIter2 first2, FwdIter2 last2, FwdIter3 dest, F&& f,
                 Proj1&& proj1, Proj2&& proj2)
@@ -654,7 +653,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
                             std::forward<F>(f), std::forward<Proj1>(proj1),
                             std::forward<Proj2>(proj2));
 
-                    return get_iter_tuple(
+                    return parallel::util::detail::get_in_in_out_result(
                         util::foreach_partitioner<ExPolicy>::call(
                             std::forward<ExPolicy>(policy),
                             hpx::util::make_zip_iterator(first1, first2, dest),
@@ -663,18 +662,19 @@ namespace hpx { namespace parallel { inline namespace v1 {
                             std::move(f1), util::projection_identity()));
                 }
 
+                using result_type =
+                    util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>;
+
                 return util::detail::algorithm_result<ExPolicy,
-                    hpx::util::tuple<FwdIter1, FwdIter2,
-                        FwdIter3>>::get(hpx::util::make_tuple(std::move(first1),
-                    std::move(first2), std::move(dest)));
+                    result_type>::get(result_type{
+                    std::move(first1), std::move(first2), std::move(dest)});
             }
         };
 
         template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
             typename FwdIter3, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-                tag::out(FwdIter3)>>::type
+            util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
         transform_(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
             FwdIter2 first2, FwdIter2 last2, FwdIter3 dest, F&& f,
             Proj1&& proj1, Proj2&& proj2, std::false_type)
@@ -687,19 +687,18 @@ namespace hpx { namespace parallel { inline namespace v1 {
                 "Requires at least forward iterator.");
 
             typedef execution::is_sequenced_execution_policy<ExPolicy> is_seq;
-            typedef hpx::util::tuple<FwdIter1, FwdIter2, FwdIter3> result_type;
+            typedef util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>
+                result_type;
 
-            return hpx::util::make_tagged_tuple<tag::in1, tag::in2, tag::out>(
-                detail::transform_binary2<result_type>().call(
-                    std::forward<ExPolicy>(policy), is_seq(), first1, last1,
-                    first2, last2, dest, std::forward<F>(f),
-                    std::forward<Proj1>(proj1), std::forward<Proj2>(proj2)));
+            return detail::transform_binary2<result_type>().call(
+                std::forward<ExPolicy>(policy), is_seq(), first1, last1, first2,
+                last2, dest, std::forward<F>(f), std::forward<Proj1>(proj1),
+                std::forward<Proj2>(proj2));
         }
         template <typename ExPolicy, typename FwdIter1, typename FwdIter2,
             typename FwdIter3, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-                tag::out(FwdIter3)>>::type
+            util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
         transform_(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
             FwdIter2 first2, FwdIter2 last2, FwdIter3 dest, F&& f,
             Proj1&& proj1, Proj2&& proj2, std::true_type);
@@ -816,8 +815,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
                                     traits::projected<Proj1, FwdIter1>,
                                     traits::projected<Proj2, FwdIter2>>::value)>
     typename util::detail::algorithm_result<ExPolicy,
-        hpx::util::tagged_tuple<tag::in1(FwdIter1), tag::in2(FwdIter2),
-            tag::out(FwdIter3)>>::type
+        util::in_in_out_result<FwdIter1, FwdIter2, FwdIter3>>::type
     transform(ExPolicy&& policy, FwdIter1 first1, FwdIter1 last1,
         FwdIter2 first2, FwdIter2 last2, FwdIter3 dest, F&& f,
         Proj1&& proj1 = Proj1(), Proj2&& proj2 = Proj2())
