@@ -264,7 +264,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             typename InIter2, typename OutIter, typename F, typename Proj1,
             typename Proj2>
         static typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tuple<InIter1, InIter2, OutIter>>::type
+            util::in_in_out_result<InIter1, InIter2, OutIter>>::type
         segmented_transform(Algo&& algo, ExPolicy&& policy, InIter1 first1,
             InIter1 last1, InIter2 first2, OutIter dest, F&& f, Proj1&& proj1,
             Proj2&& proj2, std::true_type)
@@ -280,7 +280,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             typedef typename traits3::local_iterator local_iterator_type3;
 
             typedef util::detail::algorithm_result<ExPolicy,
-                hpx::util::tuple<InIter1, InIter2, OutIter>>
+                util::in_in_out_result<InIter1, InIter2, OutIter>>
                 result;
 
             auto last2 = first2;
@@ -300,14 +300,14 @@ namespace hpx { namespace parallel { inline namespace v1 {
                 local_iterator_type3 ldest = traits3::begin(sdest);
                 if (beg1 != end1)
                 {
-                    hpx::util::tuple<local_iterator_type1, local_iterator_type2,
-                        local_iterator_type3>
+                    util::in_in_out_result<local_iterator_type1,
+                        local_iterator_type2, local_iterator_type3>
                         out = dispatch(traits1::get_id(sit1), algo, policy,
                             std::true_type(), beg1, end1, beg2, ldest, f, proj1,
                             proj2);
-                    last1 = traits1::compose(send1, hpx::util::get<0>(out));
-                    last2 = traits2::compose(send2, hpx::util::get<1>(out));
-                    dest = traits3::compose(sdest, hpx::util::get<2>(out));
+                    last1 = traits1::compose(send1, out.in1);
+                    last2 = traits2::compose(send2, out.in2);
+                    dest = traits3::compose(sdest, out.out);
                 }
             }
             else
@@ -317,8 +317,8 @@ namespace hpx { namespace parallel { inline namespace v1 {
                 local_iterator_type1 end1 = traits1::end(sit1);
                 local_iterator_type2 beg2 = traits2::local(first2);
                 local_iterator_type3 ldest = traits3::begin(sdest);
-                hpx::util::tuple<local_iterator_type1, local_iterator_type2,
-                    local_iterator_type3>
+                util::in_in_out_result<local_iterator_type1,
+                    local_iterator_type2, local_iterator_type3>
                     out;
                 if (beg1 != end1)
                 {
@@ -354,12 +354,13 @@ namespace hpx { namespace parallel { inline namespace v1 {
                         std::true_type(), beg1, end1, beg2, ldest, f, proj1,
                         proj2);
                 }
-                last1 = traits1::compose(send1, hpx::util::get<0>(out));
-                last2 = traits2::compose(send2, hpx::util::get<1>(out));
-                dest = traits3::compose(sdest, hpx::util::get<2>(out));
+                last1 = traits1::compose(send1, out.in1);
+                last2 = traits2::compose(send2, out.in2);
+                dest = traits3::compose(sdest, out.out);
             }
-            return result::get(hpx::util::make_tuple<InIter1, InIter2, OutIter>(
-                std::move(last1), std::move(last2), std::move(dest)));
+            return result::get(
+                util::in_in_out_result<InIter1, InIter2, OutIter>{
+                    std::move(last1), std::move(last2), std::move(dest)});
         }
 
         // parallel remote implementation
@@ -367,7 +368,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             typename InIter2, typename OutIter, typename F, typename Proj1,
             typename Proj2>
         static typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tuple<InIter1, InIter2, OutIter>>::type
+            util::in_in_out_result<InIter1, InIter2, OutIter>>::type
         segmented_transform(Algo&& algo, ExPolicy&& policy, InIter1 first1,
             InIter1 last1, InIter2 first2, OutIter dest, F&& f, Proj1&& proj1,
             Proj2&& proj2, std::false_type)
@@ -383,7 +384,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             typedef typename traits3::local_iterator local_iterator_type3;
 
             typedef util::detail::algorithm_result<ExPolicy,
-                hpx::util::tuple<InIter1, InIter2, OutIter>>
+                util::in_in_out_result<InIter1, InIter2, OutIter>>
                 result;
 
             typedef std::integral_constant<bool,
@@ -400,8 +401,9 @@ namespace hpx { namespace parallel { inline namespace v1 {
             segment_iterator2 send2 = traits2::segment(last2);
             segment_iterator3 sdest = traits3::segment(dest);
 
-            typedef std::vector<future<hpx::util::tuple<local_iterator_type1,
-                local_iterator_type2, local_iterator_type3>>>
+            typedef std::vector<
+                future<util::in_in_out_result<local_iterator_type1,
+                    local_iterator_type2, local_iterator_type3>>>
                 segment_type;
             segment_type segments;
             segments.reserve(std::distance(sit1, send1));
@@ -465,18 +467,17 @@ namespace hpx { namespace parallel { inline namespace v1 {
 
             return result::get(dataflow(
                 [=](segment_type&& r)
-                    -> hpx::util::tuple<InIter1, InIter2, OutIter> {
+                    -> util::in_in_out_result<InIter1, InIter2, OutIter> {
                     // handle any remote exceptions, will throw on error
                     std::list<std::exception_ptr> errors;
                     parallel::util::detail::handle_remote_exceptions<
                         ExPolicy>::call(r, errors);
                     auto rl = r.back().get();
-                    auto olast1 =
-                        traits1::compose(send1, hpx::util::get<0>(rl));
-                    auto olast2 =
-                        traits2::compose(send2, hpx::util::get<1>(rl));
-                    auto odest = traits3::compose(sdest, hpx::util::get<2>(rl));
-                    return hpx::util::make_tuple(olast1, olast2, odest);
+                    auto olast1 = traits1::compose(send1, rl.in1);
+                    auto olast2 = traits2::compose(send2, rl.in2);
+                    auto odest = traits3::compose(sdest, rl.out);
+                    return util::in_in_out_result<InIter1, InIter2, OutIter>{
+                        olast1, olast2, odest};
                 },
                 std::move(segments)));
         }
@@ -486,8 +487,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
         template <typename ExPolicy, typename InIter1, typename InIter2,
             typename OutIter, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(InIter1), tag::in2(InIter2),
-                tag::out(OutIter)>>::type
+            util::in_in_out_result<InIter1, InIter2, OutIter>>::type
         transform_(ExPolicy&& policy, InIter1 first1, InIter1 last1,
             InIter2 first2, OutIter dest, F&& f, Proj1&& proj1, Proj2&& proj2,
             std::true_type)
@@ -495,8 +495,7 @@ namespace hpx { namespace parallel { inline namespace v1 {
             typedef parallel::execution::is_sequenced_execution_policy<ExPolicy>
                 is_seq;
             typedef util::detail::algorithm_result<ExPolicy,
-                hpx::util::tagged_tuple<tag::in1(InIter1), tag::in2(InIter2),
-                    tag::out(OutIter)>>
+                util::in_in_out_result<InIter1, InIter2, OutIter>>
                 result;
 
             auto last2 = first2;
@@ -505,8 +504,8 @@ namespace hpx { namespace parallel { inline namespace v1 {
             if (first1 == last1)
             {
                 return result::get(
-                    hpx::util::make_tuple<InIter1, InIter2, OutIter>(
-                        std::move(last1), std::move(last2), std::move(dest)));
+                    util::in_in_out_result<InIter1, InIter2, OutIter>{
+                        std::move(last1), std::move(last2), std::move(dest)});
             }
 
             typedef hpx::traits::segmented_iterator_traits<InIter1>
@@ -515,23 +514,21 @@ namespace hpx { namespace parallel { inline namespace v1 {
                 iterator2_traits;
             typedef hpx::traits::segmented_iterator_traits<OutIter>
                 iterator3_traits;
-            return hpx::util::make_tagged_tuple<tag::in1, tag::in2,
-                tag::out>(segmented_transform(
-                transform_binary<
-                    hpx::util::tuple<typename iterator1_traits::local_iterator,
-                        typename iterator2_traits::local_iterator,
-                        typename iterator3_traits::local_iterator>>(),
+            return segmented_transform(
+                transform_binary<util::in_in_out_result<
+                    typename iterator1_traits::local_iterator,
+                    typename iterator2_traits::local_iterator,
+                    typename iterator3_traits::local_iterator>>(),
                 std::forward<ExPolicy>(policy), first1, last1, first2, dest,
                 std::forward<F>(f), std::forward<Proj1>(proj1),
-                std::forward<Proj2>(proj2), is_seq()));
+                std::forward<Proj2>(proj2), is_seq());
         }
 
         // forward declare the non-segmented version of this algorithm
         template <typename ExPolicy, typename InIter1, typename InIter2,
             typename OutIter, typename F, typename Proj1, typename Proj2>
         typename util::detail::algorithm_result<ExPolicy,
-            hpx::util::tagged_tuple<tag::in1(InIter1), tag::in2(InIter2),
-                tag::out(OutIter)>>::type
+            util::in_in_out_result<InIter1, InIter2, OutIter>>::type
         transform_(ExPolicy&& policy, InIter1 first1, InIter1 last1,
             InIter2 first2, OutIter dest, F&& f, Proj1&& proj1, Proj2&& proj2,
             std::false_type);

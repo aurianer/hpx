@@ -112,6 +112,14 @@ namespace hpx { namespace parallel { namespace util {
         {
             return {std::move(in1), std::move(in2), std::move(out)};
         }
+
+        template <typename Archive>
+        void serialize(Archive& ar, unsigned)
+        {
+            // clang-format off
+            ar & in1 & in2 & out;
+            // clang-format on
+        }
     };
 
     ///////////////////////////////////////////////////////////////////////////
