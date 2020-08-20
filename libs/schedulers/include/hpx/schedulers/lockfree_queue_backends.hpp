@@ -115,9 +115,25 @@ namespace hpx { namespace threads { namespace policies {
             return queue_.enqueue(val);
         }
 
+        bool push_bulk(rval_reference val, bool /*other_end*/ = false)
+        {
+            return queue_.enqueue_bulk(std::move(val),
+                    HPX_THREAD_QUEUE_MAX_ADD_NEW_COUNT);
+        }
+
+        bool push_bulk(const_reference val, bool /*other_end*/ = false)
+        {
+            return queue_.enqueue(val, HPX_THREAD_QUEUE_MAX_ADD_NEW_COUNT);
+        }
+
         bool pop(reference val, bool steal = true)
         {
             return queue_.try_dequeue(val);
+        }
+
+        bool pop_bulk(reference val, bool steal = true)
+        {
+            return queue_.try_dequeue(val, HPX_THREAD_QUEUE_MAX_ADD_NEW_COUNT);
         }
 
         bool empty()
