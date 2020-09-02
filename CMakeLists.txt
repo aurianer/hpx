@@ -2232,6 +2232,7 @@ include(HPX_SetupBoostIostreams)
 include(HPX_SetupBoostProgramOptions)
 # Find all allocators which are currently supported.
 include(HPX_SetupAllocator)
+include(HPX_SetupHIP)
 include(HPX_SetupHwloc)
 
 # reset external source lists
