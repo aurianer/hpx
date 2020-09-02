@@ -183,48 +183,54 @@ function(hpx_add_compile_flag)
 endfunction()
 
 function(hpx_add_compile_flag_if_available FLAG)
+  set(options HIP)
   set(one_value_args NAME)
-  set(multi_value_args CONFIGURATIONS LANGUAGES)
+  set(multi_value_args CONFIGURATIONS LANGUAGES COMPILER)
   cmake_parse_arguments(
     HPX_ADD_COMPILE_FLAG_IA "${options}" "${one_value_args}"
     "${multi_value_args}" ${ARGN}
   )
 
-  if(HPX_ADD_COMPILE_FLAG_IA_NAME)
-    string(TOUPPER ${HPX_ADD_COMPILE_FLAG_IA_NAME} _name)
-  else()
-    string(TOUPPER ${FLAG} _name)
-  endif()
+# The -Wno-sync-nand gets added for hip even if the check_cxx_compiler_flag fails
+if (NOT HPX_ADD_COMPILE_FLAG_IA_HIP)
 
-  string(REGEX REPLACE "^-+" "" _name ${_name})
-  string(REGEX REPLACE "[=\\-]" "_" _name ${_name})
-  string(REGEX REPLACE "," "_" _name ${_name})
-  string(REGEX REPLACE "\\+" "X" _name ${_name})
-
-  set(_languages "CXX")
-  if(HPX_ADD_COMPILE_FLAG_IA_LANGUAGES)
-    set(_languages ${HPX_ADD_COMPILE_FLAG_IA_LANGUAGES})
-  endif()
-
-  foreach(_lang ${_languages})
-    if(_lang STREQUAL "CXX")
-      check_cxx_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
-    elseif(_lang STREQUAL "C")
-      check_c_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
-    elseif(_lang STREQUAL "Fortran")
-      # Assuming the C compiler accepts the same flags as the fortran one ...
-      check_c_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
+    if(HPX_ADD_COMPILE_FLAG_IA_NAME)
+      string(TOUPPER ${HPX_ADD_COMPILE_FLAG_IA_NAME} _name)
     else()
-      hpx_error("Unsupported language ${_lang}.")
+      string(TOUPPER ${FLAG} _name)
     endif()
-    if(HPX_WITH_${_lang}_FLAG_${_name})
-      hpx_add_compile_flag(
-        ${FLAG} CONFIGURATIONS ${HPX_ADD_COMPILE_FLAG_IA_CONFIGURATIONS}
-        LANGUAGES ${_lang}
-      )
-    else()
-      hpx_info("\"${FLAG}\" not available for language ${_lang}.")
+
+    string(REGEX REPLACE "^-+" "" _name ${_name})
+    string(REGEX REPLACE "[=\\-]" "_" _name ${_name})
+    string(REGEX REPLACE "," "_" _name ${_name})
+    string(REGEX REPLACE "\\+" "X" _name ${_name})
+
+    set(_languages "CXX")
+    if(HPX_ADD_COMPILE_FLAG_IA_LANGUAGES)
+      set(_languages ${HPX_ADD_COMPILE_FLAG_IA_LANGUAGES})
     endif()
-  endforeach()
+
+    foreach(_lang ${_languages})
+      if(_lang STREQUAL "CXX")
+        check_cxx_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
+      elseif(_lang STREQUAL "C")
+        check_c_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
+      elseif(_lang STREQUAL "Fortran")
+        # Assuming the C compiler accepts the same flags as the fortran one ...
+        check_c_compiler_flag(${FLAG} HPX_WITH_${_lang}_FLAG_${_name})
+      else()
+        hpx_error("Unsupported language ${_lang}.")
+      endif()
+      if(HPX_WITH_${_lang}_FLAG_${_name})
+        hpx_add_compile_flag(
+          ${FLAG} CONFIGURATIONS ${HPX_ADD_COMPILE_FLAG_IA_CONFIGURATIONS}
+          LANGUAGES ${_lang}
+        )
+      else()
+        hpx_info("\"${FLAG}\" not available for language ${_lang}.")
+      endif()
+    endforeach()
+
+endif(NOT HPX_ADD_COMPILE_FLAG_IA_HIP)
 
 endfunction()
