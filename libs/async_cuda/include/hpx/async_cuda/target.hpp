@@ -25,7 +25,7 @@
 #include <hpx/serialization/serialization_fwd.hpp>
 #endif
 
-#include <cuda_runtime.h>
+#include <hpx/async_cuda/custom_gpu_api.hpp>
 
 #include <cstddef>
 #include <memory>

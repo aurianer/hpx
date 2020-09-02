@@ -17,7 +17,7 @@
 #include <hpx/futures/future.hpp>
 
 // CUDA runtime
-#include <cuda_runtime.h>
+#include <hpx/async_cuda/custom_gpu_api.hpp>
 // CuBLAS
 #include <cublas_v2.h>
 //
