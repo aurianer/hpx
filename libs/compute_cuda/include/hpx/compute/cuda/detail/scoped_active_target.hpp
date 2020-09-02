@@ -10,12 +10,12 @@
 
 #include <hpx/config.hpp>
 
-#if defined(HPX_HAVE_CUDA)
+#if defined(HPX_HAVE_CUDA) || defined(HPX_HAVE_HIP)
 #include <hpx/assert.hpp>
 #include <hpx/async_cuda/target.hpp>
 #include <hpx/modules/errors.hpp>
 
-#include <cuda_runtime.h>
+#include <hpx/async_cuda/custom_gpu_api.hpp>
 
 #include <string>
 

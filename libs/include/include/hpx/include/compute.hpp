@@ -6,7 +6,9 @@
 
 #pragma once
 
-#if defined(__CUDACC__) || defined(HPX_HAVE_LIB_CUDA_COMPUTE)
+#include <hpx/config.hpp>
+#if defined(__CUDACC__) || defined(HPX_HAVE_LIB_CUDA_COMPUTE) \
+    || defined(HPX_HAVE_HIP)
 #include <hpx/compute/cuda.hpp>
 #endif
 #include <hpx/compute/host.hpp>

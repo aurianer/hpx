@@ -17,7 +17,7 @@
 #include <hpx/async_cuda/target.hpp>
 
 // CUDA runtime
-#include <cuda_runtime.h>
+#include <hpx/async_cuda/custom_gpu_api.hpp>
 //
 #include <algorithm>
 #include <cmath>

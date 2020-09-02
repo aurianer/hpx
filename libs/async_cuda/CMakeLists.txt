@@ -26,6 +26,8 @@ set(async_cuda_headers
     hpx/async_cuda/cuda_exception.hpp
     hpx/async_cuda/cuda_future.hpp
     hpx/async_cuda/cublas_executor.hpp
+    hpx/async_cuda/custom_gpu_api.hpp
+    hpx/async_cuda/custom_blas_api.hpp
     hpx/async_cuda/get_targets.hpp
     hpx/async_cuda/target.hpp
 )
@@ -41,6 +43,11 @@ if(HPX_WITH_DISTRIBUTED_RUNTIME)
   set(async_cuda_extra_module_dependencies
       hpx_actions_base hpx_async_distributed hpx_performance_counters
   )
+endif()
+
+if(HPX_WITH_HIP AND TARGET roc::hipblas)
+  set(async_cuda_extra_module_dependencies
+    ${async_cuda_extra_module_dependencies} roc::hipblas)
 endif()
 
 include(HPX_AddModule)
