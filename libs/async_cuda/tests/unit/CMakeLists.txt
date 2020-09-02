@@ -12,7 +12,11 @@ set(tests cuda_future)
 
 set(tests ${tests} cublas_matmul)
 
-set(tests cublas_matmul cuda_future)
+# Temporary only this test is enabled
+if(HPX_WITH_HIP)
+  set(tests dummy_hip)
+endif(HPX_WITH_HIP)
+
 
 set(cublas_matmul_PARAMETERS THREADS_PER_LOCALITY 4)
 set(cuda_future_PARAMETERS THREADS_PER_LOCALITY 4)
