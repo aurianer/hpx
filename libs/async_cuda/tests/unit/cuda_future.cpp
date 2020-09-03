@@ -73,7 +73,11 @@ int test_saxpy(hpx::cuda::experimental::cuda_executor& cudaexec)
 
     // now launch a kernel on the stream
     void* args[] = {&N, &ratio, &d_A, &d_B};
+#ifdef HPX_HAVE_HIP
+    hpx::apply(cudaexec, cudaLaunchKernel,
+#else
     hpx::apply(cudaexec, cudaLaunchKernel<void>,
+#endif
         reinterpret_cast<const void*>(&saxpy), dim3(blocks), dim3(threads),
         args, std::size_t(0));
 
