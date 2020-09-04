@@ -52,6 +52,15 @@ if(HPX_WITH_HIP)
 #  add_library(HIP::hip INTERFACE IMPORTED)
 #  target_compile_options(HIP::hip INTERFACE -xhip ${HIP_HIPCC_FLAGS})
 
+  # Setup hipblas (creates roc::hipblas)
+  find_package(hipblas HINTS $ENV{HIPBLAS_ROOT} CONFIG)
+  if (NOT hipblas_FOUND)
+    hpx_error(
+      "Hipblas could not be found, please specify HIPBLAS_ROOT to point to the \
+      correct location"
+    )
+  endif()
+
   set(HPX_WITH_COMPUTE ON)
   hpx_add_config_define(HPX_HAVE_COMPUTE)
   hpx_add_config_define(HPX_HAVE_HIP)
