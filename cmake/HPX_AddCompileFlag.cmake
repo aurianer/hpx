@@ -185,7 +185,7 @@ endfunction()
 function(hpx_add_compile_flag_if_available FLAG)
   set(options HIP)
   set(one_value_args NAME)
-  set(multi_value_args CONFIGURATIONS LANGUAGES COMPILER)
+  set(multi_value_args CONFIGURATIONS LANGUAGES)
   cmake_parse_arguments(
     HPX_ADD_COMPILE_FLAG_IA "${options}" "${one_value_args}"
     "${multi_value_args}" ${ARGN}
