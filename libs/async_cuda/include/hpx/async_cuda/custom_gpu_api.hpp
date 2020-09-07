@@ -60,3 +60,7 @@
     #include <cuda_runtime.h>
 
 #endif
+
+#if defined(HPX_HAVE_CUDA) || defined(HPX_HAVE_HIP)
+#define HPX_HAVE_GPU_SUPPORT
+#endif
