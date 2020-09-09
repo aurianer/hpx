@@ -87,6 +87,7 @@ namespace hpx { namespace components { namespace server
                 break;
 
             default:
+                HPX_UNUSED(level);
                 break;
             }
         }
