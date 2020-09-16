@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Copyright (c) 2020 The STE||AR-Group
+#
+# SPDX-License-Identifier: BSL-1.0
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+# ----------------------------------------------------------------
+# simple pre commit hook script to check that the changed portion
+# of the *.cpp and *.hpp which have been modified in the current
+# commit are correctly clang-formatted
+
+# To use this hook, you must have clang-format and cmake-format
+# installed on your system
+
+# To install this hook, copy this file to your git hooks as follows
+# cp tools/pre-commit-clang-format .git/hooks/pre-commit
+# chmod +x .git/hooks/pre-commit
+
+returncode=0
+# Doesn't print an error code when no files, so have to check the output
+git-clang-format &> clang-format-files.tmp
+if [[ $(grep "no modified files" clang-format-files.tmp) ]]; then
+    # We can check out or add the new formatted files
+    echo "Some files have been formatted, check them with git status"
+    echo "To ignore the formatting, use git commit --no-verify"
+    returncode=1
+fi
+
+exit $returncode
