@@ -33,6 +33,7 @@ jobs:
       shell: bash
       run: |
           cmake --build build --target all
+          cmake --install .
           cmake --build build --target tests
     - name: Test
       shell: bash
