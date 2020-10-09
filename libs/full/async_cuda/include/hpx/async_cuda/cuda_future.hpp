@@ -204,7 +204,7 @@ namespace hpx { namespace cuda { namespace experimental {
         // -----------------------------------------------------------------
         // intrusive pointer for future_data
         using future_data_ptr =
-            memory::intrusive_ptr<future_data<hpx::util::internal_allocator<>>>;
+            intrusive_ptr<future_data<hpx::util::internal_allocator<>>>;
 
         // -----------------------------------------------------------------
         // we track requests and future data in two vectors even though
