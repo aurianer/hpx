@@ -277,6 +277,7 @@ namespace hpx { namespace components { namespace server {
     // function to be called to terminate this locality immediately
     void runtime_support::terminate(naming::id_type const& respond_to)
     {
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
         // push pending logs
         components::cleanup_logging();
 
@@ -305,6 +306,7 @@ namespace hpx { namespace components { namespace server {
         }
 
         std::abort();
+#endif
     }
 }}}    // namespace hpx::components::server
 
@@ -766,7 +768,9 @@ namespace hpx { namespace components { namespace server {
                 {
                     // respond synchronously
                     using void_lco_type = lcos::base_lco_with_value<void>;
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
                     using action_type = void_lco_type::set_event_action;
+#endif
 
                     naming::address addr;
                     if (agas::is_local_address_cached(respond_to, addr))
@@ -777,9 +781,13 @@ namespace hpx { namespace components { namespace server {
 #if defined(HPX_HAVE_NETWORKING)
                     else
                     {
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
                         // apply remotely, parcel is sent synchronously
                         hpx::applier::detail::apply_r_sync<action_type>(
                             std::move(addr), respond_to);
+#else
+                        HPX_ASSERT(false);
+#endif
                     }
 #endif
                 }
@@ -1140,13 +1148,17 @@ namespace hpx { namespace components { namespace server {
 
         std::vector<naming::id_type> locality_ids = find_remote_localities();
 
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
         typedef server::runtime_support::remove_from_connection_cache_action
             action_type;
+#endif
 
         std::vector<future<void>> callbacks;
         callbacks.reserve(locality_ids.size());
 
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
         action_type act;
+#endif
         for (naming::id_type const& id : locality_ids)
         {
             // console is handled separately
@@ -1155,8 +1167,10 @@ namespace hpx { namespace components { namespace server {
 
             indirect_packaged_task ipt;
             callbacks.push_back(ipt.get_future());
+#if !defined(HPX_COMPUTE_DEVICE_CODE)
             apply_cb(
                 act, id, std::move(ipt), hpx::get_locality(), rtd->endpoints());
+#endif
         }
 
         wait_all(callbacks);
