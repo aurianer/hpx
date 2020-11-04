@@ -2623,6 +2623,10 @@ if(HPX_WITH_RPM)
   add_subdirectory(cmake/packaging/rpm)
 endif()
 
+if(HPX_WITH_TESTS_BENCHMARKS)
+  add_subdirectory(tools/perftests_ci)
+endif()
+
 # ##############################################################################
 # print overall configuration summary
 include(HPX_PrintSummary)
