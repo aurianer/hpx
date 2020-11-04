@@ -28,7 +28,7 @@ def run(run_mpi_tests, verbose_ctest):
 
 
 def run_perftests():
-    runtools.srun([os.path.join('tests', 'regression', 'perftests')],
+    runtools.srun([os.path.join('tests', 'performance')],
                   log_output=log.info,
                   cwd=buildinfo.binary_dir)
 
