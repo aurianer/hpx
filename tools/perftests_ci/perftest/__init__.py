@@ -27,7 +27,7 @@ def _now():
     return datetime.now(timezone.utc).astimezone().isoformat()
 
 
-def run(scheduling_policy, threads, extra_opts):
+def run(local, scheduling_policy, threads, extra_opts):
     from pyutils import buildinfo
 
     binary = os.path.join(buildinfo.binary_dir, 'bin', 'future_overhead_test')
@@ -35,7 +35,10 @@ def run(scheduling_policy, threads, extra_opts):
     if extra_opts:
         command.append(str(extra_opts))
 
-    output = runtools.srun(command)
+    if local:
+        output = runtools.run(command)
+    else:
+        output = runtools.srun(command)
 
     data = json.loads(output)
 
