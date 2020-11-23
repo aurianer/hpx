@@ -14,6 +14,7 @@ set(benchmarks
     delay_baseline_threaded
     function_object_wrapper_overhead
     future_overhead
+    future_overhead_report
     hpx_tls_overhead
     native_tls_overhead
     print_heterogeneous_payloads
@@ -169,6 +170,7 @@ set(nonconcurrent_fifo_overhead_FLAGS DEPENDENCIES hpx_timing)
 set(nonconcurrent_lifo_overhead_FLAGS DEPENDENCIES hpx_timing)
 set(transform_reduce_scaling_FLAGS DEPENDENCIES hpx_timing)
 set(future_overhead_PARAMETERS THREADS_PER_LOCALITY 4)
+set(future_overhead_report_PARAMETERS THREADS_PER_LOCALITY 4)
 
 # These tests do not run on hpx threads, so we don't want to pass hpx params
 # into them
