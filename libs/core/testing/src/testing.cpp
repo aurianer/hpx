@@ -1,3 +1,4 @@
+//  Copyright (c) 2020 ETH Zurich
 //  Copyright (c) 2013 Hartmut Kaiser
 //  Copyright (c) 2017 Denis Blank
 //
@@ -5,6 +6,7 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#include <type_traits>
 #define HPX_NO_VERSION_CHECK
 
 #include <hpx/assert.hpp>
@@ -69,6 +71,19 @@ namespace hpx { namespace util {
         }
 
         fixture global_fixture{std::cerr};
+
+        json_perf_times& times()
+        {
+            static json_perf_times res;
+            return res;
+        }
+
+        void add_time(std::string const& test_name, std::string const& executor,
+            double time)
+        {
+            times().add(test_name, executor, time);
+        }
+
     }    // namespace detail
 
     ////////////////////////////////////////////////////////////////////////////
@@ -108,4 +123,29 @@ namespace hpx { namespace util {
     {
         print_cdash_timing(name, time / 1e9);
     }
+
+    void perf_test_report(std::string const& name, std::string const& exec,
+        const std::size_t steps, function_nonser<void(void)>&& test)
+    {
+        if (steps == 0)
+            return;
+        // First iteration to cache the data
+        test();
+        using timer = std::chrono::high_resolution_clock;
+        timer::time_point start;
+        for (size_t i = 0; i != steps; ++i)
+        {
+            // For now we don't flush the cache
+            //flush_cache();
+            start = timer::now();
+            test();
+            // default is in seconds
+            auto time =
+                std::chrono::duration_cast<std::chrono::duration<double>>(
+                    timer::now() - start);
+            detail::add_time(name, exec, time.count());
+        }
+        std::cout << detail::times();
+    }
+
 }}    // namespace hpx::util
