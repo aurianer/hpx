@@ -17,7 +17,10 @@
 
 #include <hpx/algorithms/traits/projected.hpp>
 #include <hpx/algorithms/traits/projected_range.hpp>
+// Still need to include the non-range header since we don't have search_n
+// sequential implementation supporting sentinels yet
 #include <hpx/parallel/algorithms/search.hpp>
+#include <hpx/parallel/algorithms/detail/search.hpp>
 
 #include <cstddef>
 #include <type_traits>
@@ -788,7 +791,7 @@ namespace hpx { namespace ranges {
             Sent last, FwdIter2 s_first, Sent2 s_last, Pred&& op = Pred(),
             Proj1&& proj1 = Proj1(), Proj2&& proj2 = Proj2())
         {
-            return hpx::parallel::v1::detail::search<FwdIter, Sent>().call(
+            return hpx::ranges::detail::search<FwdIter, Sent>().call(
                 hpx::execution::seq, std::true_type{}, first, last, s_first,
                 s_last, std::forward<Pred>(op), std::forward<Proj1>(proj1),
                 std::forward<Proj2>(proj2));
@@ -823,7 +826,7 @@ namespace hpx { namespace ranges {
         {
             using is_seq = hpx::is_sequenced_execution_policy<ExPolicy>;
 
-            return hpx::parallel::v1::detail::search<FwdIter, Sent>().call(
+            return hpx::ranges::detail::search<FwdIter, Sent>().call(
                 std::forward<ExPolicy>(policy), is_seq(), first, last, s_first,
                 s_last, std::forward<Pred>(op), std::forward<Proj1>(proj1),
                 std::forward<Proj2>(proj2));
