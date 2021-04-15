@@ -10,7 +10,6 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 set(CTEST_TEST_TIMEOUT 300)
 set(CTEST_BUILD_PARALLELISM 20)
-set(CTEST_TEST_PARALLELISM 4)
 set(CTEST_SITE "cscs(daint)")
 set(CTEST_UPDATE_COMMAND "git")
 set(CTEST_UPDATE_VERSION_ONLY "ON")
@@ -28,7 +27,8 @@ else()
 endif()
 
 ctest_start(Perftests TRACK "${CTEST_TRACK}")
-ctest_submit(PARTS Test BUILD_ID CTEST_BUILD_ID)
+ctest_update()
+ctest_submit(PARTS Update BUILD_ID CTEST_BUILD_ID)
 file(WRITE "jenkins-hpx-${CTEST_BUILD_CONFIGURATION_NAME}-cdash-build-id.txt"
      "${CTEST_BUILD_ID}"
 )
