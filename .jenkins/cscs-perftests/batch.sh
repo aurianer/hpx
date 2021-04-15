@@ -41,6 +41,8 @@ mkdir -p $result_dir
 result=$result_dir/local-priority-fifo.json
 mkdir -p ${build_dir}/reports
 
+# Load python packages
+source /apps/daint/SSL/HPX/virtual_envs/perftests_env/bin/activate
 
 # Build binaries for performance tests
 ${perftests_dir}/driver.py -v -l $logfile build -b release \
