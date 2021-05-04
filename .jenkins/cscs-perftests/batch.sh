@@ -72,6 +72,8 @@ test_errors=0
       || { echo 'Plotting failed'; plot_errors=1; exit 1; }
 #done
 
+ctest_notes_files=$(ls ${build_dir}/reports)
+
 # Dummy ctest to upload the html report of the perftest
 set +e
 ctest \
@@ -81,6 +83,7 @@ ctest \
     -DCTEST_BUILD_CONFIGURATION_NAME="${configuration_name}" \
     -DCTEST_SOURCE_DIRECTORY="${src_dir}" \
     -DCTEST_BINARY_DIRECTORY="${build_dir}"
+    -DCTEST_NOTES_FILES="${ctest_notes_files}"
 set -e
 
 trap "status_computation_and_artifacts_storage" EXIT

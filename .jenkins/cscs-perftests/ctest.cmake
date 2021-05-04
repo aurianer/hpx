@@ -27,8 +27,14 @@ else()
 endif()
 
 ctest_start(Perftests TRACK "${CTEST_TRACK}")
+
 ctest_update()
-ctest_submit(PARTS Update BUILD_ID CTEST_BUILD_ID)
+
+ctest_submit(PARTS Update)
+
+ctest_submit(PARTS Test BUILD_ID CTEST_BUILD_ID)
 file(WRITE "jenkins-hpx-${CTEST_BUILD_CONFIGURATION_NAME}-cdash-build-id.txt"
      "${CTEST_BUILD_ID}"
 )
+
+ctest_submit(PARTS Notes)
