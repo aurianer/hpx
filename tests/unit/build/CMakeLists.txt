@@ -49,7 +49,7 @@ function(
     )
   endif()
   set(test_dir "${PROJECT_SOURCE_DIR}/${test_dir}")
-  if(HPX_WITH_CUDA_CLANG)
+  if(HPX_WITH_CLANG_CUDA)
     set(cmake_cuda_compiler -DCMAKE_CUDA_COMPILER=$ENV{CXX})
   endif()
   add_custom_target(
