@@ -7,7 +7,6 @@
 #pragma once
 
 #include <hpx/config.hpp>
-#if defined(HPX_HAVE_CXX17_STD_VARIANT)
 #include <hpx/execution_base/detail/try_catch_exception_ptr.hpp>
 #include <hpx/execution_base/receiver.hpp>
 #include <hpx/execution_base/sender.hpp>
@@ -281,4 +280,3 @@ namespace hpx { namespace execution { namespace experimental {
         }
     } let_error{};
 }}}    // namespace hpx::execution::experimental
-#endif

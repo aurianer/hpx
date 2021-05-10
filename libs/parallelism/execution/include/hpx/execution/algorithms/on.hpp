@@ -7,7 +7,6 @@
 #pragma once
 
 #include <hpx/config.hpp>
-#if defined(HPX_HAVE_CXX17_STD_VARIANT)
 #include <hpx/datastructures/optional.hpp>
 #include <hpx/datastructures/tuple.hpp>
 #include <hpx/execution/algorithms/detail/partial_algorithm.hpp>
@@ -261,4 +260,3 @@ namespace hpx { namespace execution { namespace experimental {
         }
     } on{};
 }}}    // namespace hpx::execution::experimental
-#endif
