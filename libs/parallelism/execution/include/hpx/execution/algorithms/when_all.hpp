@@ -49,6 +49,7 @@ namespace hpx { namespace execution { namespace experimental {
                     }
                     catch (...)
                     {
+                        // NOLINTNEXTLINE(bugprone-throw-keyword-missing)
                         os.e = std::current_exception();
                     }
                 }
@@ -75,6 +76,7 @@ namespace hpx { namespace execution { namespace experimental {
                     {
                         if (!os.set_done_error_called.exchange(true))
                         {
+                            // NOLINTNEXTLINE(bugprone-throw-keyword-missing)
                             os.e = std::current_exception();
                         }
                     }
