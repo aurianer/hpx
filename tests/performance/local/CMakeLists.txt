@@ -165,7 +165,7 @@ endif()
 # TODO: Necessary?
 if(HPX_WITH_CLANG_CUDA)
   set_source_files_properties(
-    stream.cpp PROPERTIES COMPILE_FLAGS "-xcuda ${HPX_CUDA_CLANG_FLAGS}"
+    stream.cpp PROPERTIES COMPILE_FLAGS "-xcuda"
   )
 endif()
 
