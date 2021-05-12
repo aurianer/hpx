@@ -18,7 +18,7 @@ set(CTEST_SUBMIT_RETRY_DELAY 60)
 
 if(NOT "$ENV{ghprbPullId}" STREQUAL "")
   set(CTEST_BUILD_NAME "$ENV{ghprbPullId}-${CTEST_BUILD_CONFIGURATION_NAME}")
-  set(CTEST_TRACK "Pull_Requests")
+  set(CTEST_TRACK "Perftests")
 else()
   set(CTEST_BUILD_NAME
       "$ENV{git_local_branch}-${CTEST_BUILD_CONFIGURATION_NAME}"
@@ -26,7 +26,7 @@ else()
   set(CTEST_TRACK "$ENV{git_local_branch}")
 endif()
 
-ctest_start(Perftests TRACK "${CTEST_TRACK}")
+ctest_start(Experimental TRACK "${CTEST_TRACK}")
 
 ctest_update()
 
