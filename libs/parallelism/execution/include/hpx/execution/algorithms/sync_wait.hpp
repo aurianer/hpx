@@ -151,16 +151,13 @@ namespace hpx { namespace execution { namespace experimental {
                 signal_set_called();
             }
 
-            void set_value() && noexcept
+            template <typename... Us,
+                typename =
+                    std::enable_if_t<(is_void_result && sizeof...(Us) == 0) ||
+                        (!is_void_result && sizeof...(Us) == 1)>>
+                void set_value(Us&&... us) && noexcept
             {
-                st.v.template emplace<value_type>();
-                signal_set_called();
-            }
-
-            template <typename U>
-                void set_value(U&& u) && noexcept
-            {
-                st.v.template emplace<value_type>(std::forward<U>(u));
+                st.v.template emplace<value_type>(std::forward<Us>(us)...);
                 signal_set_called();
             }
         };

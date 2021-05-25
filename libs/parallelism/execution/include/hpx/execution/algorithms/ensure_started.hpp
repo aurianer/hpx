@@ -95,35 +95,7 @@ namespace hpx { namespace execution { namespace experimental {
             struct shared_state
             {
             private:
-                struct ensure_started_receiver
-                {
-                    hpx::intrusive_ptr<shared_state> st;
-
-                    template <typename E>
-                        void set_error(E&& e) && noexcept
-                    {
-                        st->v.template emplace<error_type>(
-                            error_type(std::forward<E>(e)));
-                        st->set_predecessor_done();
-                        st.reset();
-                    }
-
-                    void set_done() && noexcept
-                    {
-                        st->set_predecessor_done();
-                        st.reset();
-                    };
-
-                    template <typename... Ts>
-                        void set_value(Ts&&... ts) && noexcept
-                    {
-                        st->v.template emplace<value_type>(
-                            hpx::make_tuple<>(std::forward<Ts>(ts)...));
-
-                        st->set_predecessor_done();
-                        st.reset();
-                    }
-                };
+                struct ensure_started_receiver;
 
                 using allocator_type = typename std::allocator_traits<
                     Allocator>::template rebind_alloc<shared_state>;
@@ -154,6 +126,49 @@ namespace hpx { namespace execution { namespace experimental {
                     hpx::util::unique_function_nonser<void()>;
                 boost::container::small_vector<continuation_type, 1>
                     continuations;
+
+                struct ensure_started_receiver
+                {
+                    hpx::intrusive_ptr<shared_state> st;
+
+                    template <typename E>
+                        void set_error(E&& e) && noexcept
+                    {
+                        st->v.template emplace<error_type>(
+                            error_type(std::forward<E>(e)));
+                        st->set_predecessor_done();
+                        st.reset();
+                    }
+
+                    void set_done() && noexcept
+                    {
+                        st->set_predecessor_done();
+                        st.reset();
+                    };
+
+                    // This typedef is duplicated from the parent struct. The
+                    // parent typedef is not instantiated early enough for use
+                    // here.
+                    using value_type =
+                        typename hpx::execution::experimental::sender_traits<
+                            S>::template value_types<hpx::tuple, std::variant>;
+
+                    template <typename... Ts>
+                        auto set_value(Ts&&... ts) &&
+                        noexcept -> decltype(
+                            std::declval<
+                                std::variant<std::monostate, value_type>>()
+                                .template emplace<value_type>(
+                                    hpx::make_tuple<>(std::forward<Ts>(ts)...)),
+                            void())
+                    {
+                        st->v.template emplace<value_type>(
+                            hpx::make_tuple<>(std::forward<Ts>(ts)...));
+
+                        st->set_predecessor_done();
+                        st.reset();
+                    }
+                };
 
             public:
                 template <typename S_,
