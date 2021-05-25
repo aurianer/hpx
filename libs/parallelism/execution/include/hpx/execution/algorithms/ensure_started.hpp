@@ -266,7 +266,7 @@ namespace hpx { namespace execution { namespace experimental {
                         // values/errors have been stored into the shared state.
                         // We can trigger the continuation directly.
                         std::visit(
-                            done_error_value_visitor<R>{std::move(r)}, v);
+                            done_error_value_visitor<R>{std::forward<R>(r)}, v);
                     }
                     else
                     {
@@ -283,7 +283,8 @@ namespace hpx { namespace execution { namespace experimental {
                             // directly again.
                             l.unlock();
                             std::visit(
-                                done_error_value_visitor<R>{std::move(r)}, v);
+                                done_error_value_visitor<R>{std::forward<R>(r)},
+                                v);
                         }
                         else
                         {
@@ -294,12 +295,13 @@ namespace hpx { namespace execution { namespace experimental {
                             // to the vector and the vector is not threadsafe in
                             // itself. The continuation will be called later
                             // when set_error/set_done/set_value is called.
-                            continuations.emplace_back([this,
-                                                           r = std::move(r)]() {
-                                std::visit(
-                                    done_error_value_visitor<R>{std::move(r)},
-                                    v);
-                            });
+                            continuations.emplace_back(
+                                [this, r = std::forward<R>(r)]() {
+                                    std::visit(
+                                        done_error_value_visitor<R>{
+                                            std::move(r)},
+                                        v);
+                                });
                         }
                     }
                 }
