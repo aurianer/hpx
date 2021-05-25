@@ -186,7 +186,10 @@ namespace hpx { namespace execution { namespace experimental {
                         hpx::execution::experimental::set_done(std::move(r));
                     };
 
-                    template <typename... Ts>
+                    template <typename... Ts,
+                        typename = std::enable_if_t<hpx::is_invocable_v<
+                            hpx::execution::experimental::set_value_t, R&&,
+                            Ts...>>>
                         void set_value(Ts&&... ts) && noexcept
                     {
                         hpx::execution::experimental::set_value(
