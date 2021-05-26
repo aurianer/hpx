@@ -129,7 +129,7 @@ namespace hpx { namespace execution { namespace experimental {
                 hpx::util::allocator_deleter<other_allocator>{alloc});
 
             new (p.get()) operation_state_type{std::forward<S>(s), alloc};
-            p.release();
+            HPX_UNUSED(p.release());
         }
 
         // clang-format off
