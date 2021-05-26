@@ -10,6 +10,8 @@ set(mpi_ring_async_executor_PARAMETERS THREADS_PER_LOCALITY 4 LOCALITIES 2
                                        RUNWRAPPER mpi
 )
 
+set(algorithm_send_bcast_PARAMETERS LOCALITIES 2 RUNWRAPPER mpi)
+
 foreach(test ${tests})
 
   set(sources ${test}.cpp)
