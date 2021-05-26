@@ -668,6 +668,8 @@ void test_future_sender()
         bool exception_thrown = false;
         try
         {
+            // The move is intentional. sync_wait should throw.
+            // NOLINTNEXTLINE(bugprone-use-after-move)
             ex::sync_wait(std::move(f));
         }
         catch (...)
@@ -693,6 +695,8 @@ void test_future_sender()
         bool exception_thrown = false;
         try
         {
+            // The move is intentional. sync_wait should throw.
+            // NOLINTNEXTLINE(bugprone-use-after-move)
             ex::sync_wait(std::move(f));
         }
         catch (...)
@@ -1170,10 +1174,8 @@ void test_detach()
 
         {
             std::unique_lock<hpx::mutex> l(m);
-            while (!called)
-            {
-                cv.wait_for(l, std::chrono::seconds(1));
-            }
+            hpx::cv_status st = cv.wait_for(l, std::chrono::seconds(1));
+            HPX_TEST(st == hpx::cv_status::no_timeout);
         }
         HPX_TEST(called);
     }
@@ -1192,10 +1194,8 @@ void test_detach()
 
         {
             std::unique_lock<hpx::mutex> l(m);
-            while (!called)
-            {
-                cv.wait_for(l, std::chrono::seconds(1));
-            }
+            hpx::cv_status st = cv.wait_for(l, std::chrono::seconds(1));
+            HPX_TEST(st == hpx::cv_status::no_timeout);
         }
         HPX_TEST(called);
     }
@@ -1265,6 +1265,8 @@ void test_keep_future_sender()
         bool exception_thrown = false;
         try
         {
+            // The move is intentional. sync_wait should throw.
+            // NOLINTNEXTLINE(bugprone-use-after-move)
             ex::sync_wait(std::move(f) | ex::keep_future());
         }
         catch (...)
@@ -1293,6 +1295,8 @@ void test_keep_future_sender()
         bool exception_thrown = false;
         try
         {
+            // The move is intentional. sync_wait should throw.
+            // NOLINTNEXTLINE(bugprone-use-after-move)
             ex::sync_wait(std::move(f) | ex::keep_future());
         }
         catch (...)
