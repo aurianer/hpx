@@ -4,6 +4,8 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#include <hpx/hpx_init.hpp>
+
 #include <hpx/modules/async_mpi.hpp>
 #include <hpx/modules/execution.hpp>
 #include <hpx/modules/testing.hpp>
@@ -13,35 +15,8 @@
 namespace ex = hpx::execution::experimental;
 namespace mpi = hpx::mpi::experimental;
 
-template <typename F>
-struct callback_receiver
+int hpx_main()
 {
-    std::decay_t<F> f;
-    std::atomic<bool>& set_value_called;
-
-    template <typename E>
-    void set_error(E&&) noexcept
-    {
-        HPX_TEST(false);
-    }
-
-    void set_done() noexcept
-    {
-        HPX_TEST(false);
-    };
-
-    template <typename... Ts>
-    auto set_value(Ts&&... ts) noexcept
-        -> decltype(HPX_INVOKE(f, std::forward<Ts>(ts)...), void())
-    {
-        HPX_INVOKE(f, std::forward<Ts>(ts)...);
-        set_value_called = true;
-    }
-};
-
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
     int size, rank;
     MPI_Comm comm = MPI_COMM_WORLD;
     MPI_Comm_size(comm, &size);
@@ -52,38 +27,35 @@ int main(int argc, char* argv[])
     MPI_Datatype datatype = MPI_INT;
 
     {
-        int data, count = 1;
-        std::atomic<bool> set_value_called{false};
-        auto s = mpi::send_bcast(ex::just(&data, count, datatype, 0, comm));
-        auto f = [] {};
-        auto r = callback_receiver<decltype(f)>{f, set_value_called};
-        auto os = ex::connect(std::move(s), std::move(r));
-        ex::start(os);
-        HPX_TEST(set_value_called);
-    }
-
-    {
-        int data = 0, count = 1;
-        if (rank == 0)
+        mpi::enable_user_polling enable_polling;
+        // Success path
         {
-            data = 42;
-        }
-        std::atomic<bool> set_value_called{false};
-        auto s = mpi::send_bcast(ex::when_all(ex::just(&data), ex::just(count),
-                ex::just(datatype), ex::just(0), ex::just(comm)));
-        auto f = [rank, &data]() {
+            int data = 0, count = 1;
+            if (rank == 0)
+            {
+                data = 42;
+            }
+            auto s = mpi::send_bcast(ex::just(&data, count, datatype, 0, comm));
+            ex::sync_wait(s);
             if (rank != 0)
             {
                 HPX_TEST_EQ(data, 42);
             }
-        };
-        auto r = callback_receiver<decltype(f)>{f, set_value_called};
-        auto os = ex::connect(std::move(s), std::move(r));
-        ex::start(os);
-        HPX_TEST(set_value_called);
+        }
+
+        // let the user polling go out of scope
     }
+
+    return hpx::finalize();
+}
+
+int main(int argc, char* argv[])
+{
+    MPI_Init(&argc, &argv);
+
+    auto result = hpx::init(argc, argv);
 
     MPI_Finalize();
 
-    return hpx::util::report_errors();
+    return result || hpx::util::report_errors();
 }
