@@ -47,8 +47,7 @@ namespace hpx { namespace mpi { namespace experimental {
             {
                 hpx::detail::try_catch_exception_ptr(
                     [&]() {
-                        //MPI_Ibcast(std::forward<Ts>(ts)...); //Non-blocking
-                        MPI_Bcast(std::forward<Ts>(ts)...);
+                        MPI_Ibcast(std::forward<Ts>(ts)...); //Non-blocking
                         hpx::execution::experimental::set_value(std::move(r));
                     },
                     [&](std::exception_ptr ep) {
