@@ -10,9 +10,12 @@
 #pragma once
 
 #include <hpx/config.hpp>
+#include <hpx/async_mpi/mpi_future.hpp>
 #include <hpx/execution_base/receiver.hpp>
 #include <hpx/execution_base/sender.hpp>
 #include <hpx/functional/tag_fallback_dispatch.hpp>
+
+#include <mpi.h>
 
 #include <exception>
 
@@ -47,8 +50,14 @@ namespace hpx { namespace mpi { namespace experimental {
             {
                 hpx::detail::try_catch_exception_ptr(
                     [&]() {
-                        MPI_Ibcast(std::forward<Ts>(ts)...); //Non-blocking
-                        hpx::execution::experimental::set_value(std::move(r));
+                        MPI_Request request;
+                        MPI_Ibcast(std::forward<Ts>(ts)..., &request);
+                        hpx::mpi::experimental::get_future(request)
+                            .then([r = std::move(r)](hpx::future<void>&& dummy) mutable
+                            {
+                                HPX_UNUSED(dummy);
+                                hpx::execution::experimental::set_value(std::move(r));
+                            });
                     },
                     [&](std::exception_ptr ep) {
                         hpx::execution::experimental::set_error(
