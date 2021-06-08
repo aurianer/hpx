@@ -12,6 +12,11 @@ if(NOT HPX_WITH_TESTS AND HPX_TOP_LEVEL)
 endif()
 
 if(HPX_WITH_TESTS)
+  add_library(hpx_execution_test_utilities INTERFACE)
+  target_include_directories(
+    hpx_execution_test_utilities INTERFACE include/
+  )
+
   if(HPX_WITH_TESTS_UNIT)
     add_hpx_pseudo_target(tests.unit.modules.execution)
     add_hpx_pseudo_dependencies(tests.unit.modules tests.unit.modules.execution)
