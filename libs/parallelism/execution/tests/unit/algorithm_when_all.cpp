@@ -9,7 +9,7 @@
 #include <hpx/modules/execution.hpp>
 #include <hpx/modules/testing.hpp>
 
-#include "algorithm_test_utils.hpp"
+#include <hpx/execution/tests/algorithm_test_utils.hpp>
 
 #include <atomic>
 #include <exception>
