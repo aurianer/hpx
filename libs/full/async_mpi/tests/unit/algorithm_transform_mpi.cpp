@@ -37,7 +37,7 @@ int hpx_main()
             {
                 data = 42;
             }
-            auto s = mpi::send_bcast(ex::just(&data, count, datatype, 0, comm));
+            auto s = mpi::transform_mpi(ex::just(&data, count, datatype, 0, comm), MPI_Ibcast);
             ex::sync_wait(s);
             if (rank != 0)
             {
@@ -50,7 +50,7 @@ int hpx_main()
             bool exception_thrown = false;
             try
             {
-                mpi::send_bcast(error_sender{}) | ex::sync_wait();
+                mpi::transform_mpi(error_sender{}, MPI_Ibcast) | ex::sync_wait();
                 HPX_TEST(false);
             }
             catch (std::runtime_error const& e)

@@ -14,6 +14,8 @@
 #include <hpx/execution_base/receiver.hpp>
 #include <hpx/execution_base/sender.hpp>
 #include <hpx/functional/tag_fallback_dispatch.hpp>
+#include <hpx/functional/invoke.hpp>
+#include <hpx/functional/traits/is_invocable.hpp>
 
 #include <mpi.h>
 
@@ -22,14 +24,15 @@
 namespace hpx { namespace mpi { namespace experimental {
     namespace detail {
 
-        template <typename R>
-        struct send_bcast_receiver
+        template <typename R, typename F>
+        struct transform_mpi_receiver
         {
             std::decay_t<R> r;
+            std::decay_t<F> f;
 
-            template <typename R_>
-            send_bcast_receiver(R_&& r)
-              : r(std::forward<R_>(r))
+            template <typename R_, typename F_>
+            transform_mpi_receiver(R_&& r, F_&& f)
+              : r(std::forward<R_>(r)), f(std::forward<F_>(f))
             {
             }
 
@@ -45,13 +48,14 @@ namespace hpx { namespace mpi { namespace experimental {
                 hpx::execution::experimental::set_done(std::move(r));
             };
 
-            template <typename... Ts>
+            template <typename... Ts,
+                     typename = std::enable_if_t<hpx::is_invocable_v<F, Ts..., MPI_Request*>>>
             void set_value(Ts&&... ts) && noexcept
             {
                 hpx::detail::try_catch_exception_ptr(
                     [&]() {
                         MPI_Request request;
-                        MPI_Ibcast(std::forward<Ts>(ts)..., &request);
+                        HPX_INVOKE(f, std::forward<Ts>(ts)..., &request);
                         hpx::mpi::experimental::get_future(request)
                             .then([r = std::move(r)](hpx::future<void>&& dummy) mutable
                             {
@@ -66,10 +70,11 @@ namespace hpx { namespace mpi { namespace experimental {
             }
         };
 
-        template <typename S>
-        struct send_bcast_sender
+        template <typename S, typename F>
+        struct transform_mpi_sender
         {
             std::decay_t<S> s;
+            std::decay_t<F> f;
 
             // The sender returned will be void
             template <template <typename...> class Tuple,
@@ -87,20 +92,20 @@ namespace hpx { namespace mpi { namespace experimental {
             auto connect(R&& r)
             {
                 return hpx::execution::experimental::connect(std::move(s),
-                    send_bcast_receiver<R>(std::forward<R>(r)));
+                    transform_mpi_receiver<R, F>(std::forward<R>(r), std::move(f)));
             }
         };
     }    // namespace detail
 
-    HPX_INLINE_CONSTEXPR_VARIABLE struct send_bcast_t final
-      : hpx::functional::tag_fallback<send_bcast_t>
+    HPX_INLINE_CONSTEXPR_VARIABLE struct transform_mpi_t final
+      : hpx::functional::tag_fallback<transform_mpi_t>
     {
     private:
-        template <typename S>
+        template <typename S, typename F>
         friend constexpr HPX_FORCEINLINE auto tag_fallback_dispatch(
-            send_bcast_t, S&& s)
+            transform_mpi_t, S&& s, F&& f)
         {
-            return detail::send_bcast_sender<S>{std::forward<S>(s)};
+            return detail::transform_mpi_sender<S, F>{std::forward<S>(s), std::forward<F>(f)};
         }
-    } send_bcast{};
+    } transform_mpi{};
 }}}    // namespace hpx::mpi::experimental
