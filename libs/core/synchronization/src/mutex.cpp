@@ -36,7 +36,8 @@ namespace hpx { namespace lcos { namespace local {
 
     void mutex::lock(char const* description, error_code& ec)
     {
-        HPX_ASSERT(threads::get_self_ptr() != nullptr);
+        // Allow to take a lock on a std::thread
+        //HPX_ASSERT(threads::get_self_ptr() != nullptr);
 
         HPX_ITT_SYNC_PREPARE(this);
         std::unique_lock<mutex_type> l(mtx_);
