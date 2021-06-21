@@ -55,12 +55,12 @@ namespace hpx { namespace mpi { namespace experimental {
                 hpx::detail::try_catch_exception_ptr(
                     [&]() {
                         MPI_Request request;
-                        HPX_INVOKE(f, std::forward<Ts>(ts)..., &request);
+                        int mpi_status = HPX_INVOKE(f, std::forward<Ts>(ts)..., &request);
                         hpx::mpi::experimental::get_future(request)
-                            .then([r = std::move(r)](hpx::future<void>&& dummy) mutable
+                            .then([r = std::move(r), mpi_status](hpx::future<void>&& dummy) mutable
                             {
                                 HPX_UNUSED(dummy);
-                                hpx::execution::experimental::set_value(std::move(r));
+                                hpx::execution::experimental::set_value(std::move(r), mpi_status);
                             });
                     },
                     [&](std::exception_ptr ep) {
@@ -76,10 +76,11 @@ namespace hpx { namespace mpi { namespace experimental {
             std::decay_t<S> s;
             std::decay_t<F> f;
 
-            // The sender returned will be void
+            // The sender return an int (MPI return value) hard-coded for now
+            // but will change when transform_mpi can accept a lambda
             template <template <typename...> class Tuple,
                 template <typename...> class Variant>
-            using value_types = Variant<Tuple<>>;
+            using value_types = Variant<Tuple<int>>;
 
             template <template <typename...> class Variant>
             using error_types =

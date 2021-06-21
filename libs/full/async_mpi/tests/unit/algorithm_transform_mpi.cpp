@@ -38,10 +38,14 @@ int hpx_main()
                 data = 42;
             }
             auto s = mpi::transform_mpi(ex::just(&data, count, datatype, 0, comm), MPI_Ibcast);
-            ex::sync_wait(s);
+            auto result = ex::sync_wait(s);
             if (rank != 0)
             {
                 HPX_TEST_EQ(data, 42);
+            }
+            if (rank == 0)
+            {
+                HPX_TEST(result == MPI_SUCCESS);
             }
         }
 
