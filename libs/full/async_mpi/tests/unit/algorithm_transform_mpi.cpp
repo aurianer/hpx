@@ -32,6 +32,7 @@ int hpx_main()
         mpi::enable_user_polling enable_polling;
         // Success path
         {
+            // MPI function pointer
             int data = 0, count = 1;
             if (rank == 0)
             {
@@ -48,6 +49,38 @@ int hpx_main()
                 HPX_TEST(result == MPI_SUCCESS);
             }
         }
+
+        {
+            // Lambda
+            int data = 0, count = 1;
+            if (rank == 0)
+            {
+                data = 42;
+            }
+            auto s = mpi::transform_mpi(ex::just(&data, count, datatype, 0, comm),
+                    [](int *data, int count, MPI_Datatype datatype, int i,
+                        MPI_Comm comm, MPI_Request* request)
+                    {
+                        return MPI_Ibcast(data, count, datatype, i, comm, request);
+                    });
+            auto result = ex::sync_wait(s);
+            if (rank != 0)
+            {
+                HPX_TEST_EQ(data, 42);
+            }
+            if (rank == 0)
+            {
+                HPX_TEST(result == MPI_SUCCESS);
+            }
+        }
+
+        // TODO: add a test that verifies the mpi int result when failure
+
+        // TODO: add a test that uses .on before or after the mpi sender
+
+        // TODO: add an overload to verify the tag_dispatch overload
+
+        // TODO: add a pipe overload test
 
         // Failure path
         {
