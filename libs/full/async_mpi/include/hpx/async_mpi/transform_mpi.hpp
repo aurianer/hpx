@@ -12,18 +12,49 @@
 #include <hpx/config.hpp>
 #include <hpx/async_mpi/mpi_future.hpp>
 #include <hpx/concepts/concepts.hpp>
+#include <hpx/datastructures/tuple.hpp>
 #include <hpx/execution_base/receiver.hpp>
 #include <hpx/execution_base/sender.hpp>
 #include <hpx/functional/tag_fallback_dispatch.hpp>
 #include <hpx/functional/invoke.hpp>
 #include <hpx/functional/traits/is_invocable.hpp>
 
+// FIXME try to replace this with mpi_base and check dep in cmakelists.txt
 #include <mpi.h>
 
 #include <exception>
 
 namespace hpx { namespace mpi { namespace experimental {
     namespace detail {
+
+        template <typename R>
+        void set_value_request_callback_helper(R&& r, int mpi_status)
+        {
+            if (mpi_status == MPI_SUCCESS)
+            {
+                hpx::execution::experimental::set_value(std::forward<R>(r),
+                        std::move(mpi_status));
+            }
+            //else
+            //{
+            //    // TODO: figure out MPI exceptions
+            //    hpx::execution::experimental::set_error(std::forward<R>(r),
+            //        std::make_exception_ptr(std::exception_ptr + mpi_status));
+            //}
+        }
+
+        template <typename R, typename... Ts>
+        void set_value_request_callback(MPI_Request request, R&& r, Ts&&... ts)
+        {
+            detail::add_request_callback(
+                [r = std::forward<R>(r),
+                    keep_alive = hpx::make_tuple(std::forward<Ts>(ts)...)](
+                        int status) mutable
+                    {
+                        set_value_request_callback_helper(std::move(r), status);
+                    },
+                request);
+        }
 
         template <typename R, typename F>
         struct transform_mpi_receiver
@@ -56,13 +87,11 @@ namespace hpx { namespace mpi { namespace experimental {
                 hpx::detail::try_catch_exception_ptr(
                     [&]() {
                         MPI_Request request;
-                        int mpi_status = HPX_INVOKE(f, std::forward<Ts>(ts)..., &request);
-                        hpx::mpi::experimental::get_future(request)
-                            .then([r = std::move(r), mpi_status](hpx::future<void>&& dummy) mutable
-                            {
-                                HPX_UNUSED(dummy);
-                                hpx::execution::experimental::set_value(std::move(r), mpi_status);
-                            });
+                        HPX_INVOKE(f, std::forward<Ts>(ts)..., &request);
+                        // Return value discarded as supposedly retrieve when
+                        // doing HPX_Testany on the request
+                        set_value_request_callback(request,
+                                std::move(r), std::forward<Ts>(ts)...);
                     },
                     [&](std::exception_ptr ep) {
                         hpx::execution::experimental::set_error(
