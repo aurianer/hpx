@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
     // clang-format off
     cmdline.add_options()(
         "iterations",
-        value<std::uint64_t>()->default_value(5000),
+        value<std::uint64_t>()->default_value(1),
         "number of iterations to test")
 
         ("output", "display messages during test");
