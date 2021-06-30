@@ -26,7 +26,7 @@
 namespace hpx { namespace mpi { namespace experimental {
 
     // by convention the title is 7 chars (for alignment)
-    using print_on = debug::enable_print<false>;
+    using print_on = debug::enable_print<true>;
     static constexpr print_on mpi_debug("MPI_FUT");
 
     namespace detail {
