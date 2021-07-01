@@ -85,10 +85,9 @@ namespace hpx { namespace mpi { namespace experimental {
             {
                 add_request_callback(
                         [fdp = hpx::memory::intrusive_ptr<future_data>(this)] (
-                            int flag)
+                            int status)
                         {
-                            HPX_ASSERT(flag == true);
-                            if (fdp->status_ == MPI_SUCCESS)
+                            if (status == MPI_SUCCESS)
                             {
                                 // mark the future as ready by setting the shared_state
                                 fdp->set_data(MPI_SUCCESS);
@@ -102,15 +101,8 @@ namespace hpx { namespace mpi { namespace experimental {
                 request_);
             }
 
-            void set_status(int status)
-            {
-                status_ = status;
-            }
-
             // The native MPI request handle owned by this future data
-            MPI_Request request_ = MPI_REQUEST_NULL;
-            // The return value of the mpi_call
-            int status_;
+            MPI_Request request_;
         };
 
         // -----------------------------------------------------------------
@@ -191,9 +183,10 @@ namespace hpx { namespace mpi { namespace experimental {
 
             // invoke the call to MPI_Ixxx, ignore the returned result for now
             int result = f(std::forward<Ts>(ts)..., &data->request_);
+            // The return code can be retrieved from the request
+            HPX_UNUSED(result);
 
-            // get the mpi error code
-            data->set_status(std::move(result));
+            // Add callback after the request has been filled
             data->add_callback();
 
             // return a future bound to the shared state

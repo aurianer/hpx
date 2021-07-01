@@ -77,8 +77,8 @@ namespace hpx { namespace mpi { namespace experimental {
         // that is passed to MPI_Testany
         void add_to_request_callback_vector(request_callback&& req_callback)
         {
-            get_request_callback_vector().push_back(std::move(req_callback));
             get_requests_vector().push_back(req_callback.request);
+            get_request_callback_vector().push_back(std::move(req_callback));
             get_mpi_info().requests_vector_size_ = get_requests_vector().size();
 
             if constexpr(mpi_debug.is_enabled())
@@ -182,8 +182,6 @@ namespace hpx { namespace mpi { namespace experimental {
             // create a future data shared state with the request Id
             detail::future_data_ptr data(new detail::future_data(
                 detail::future_data::init_no_addref{}, request));
-            // To add the real status we would have to call an MPI_Test here
-            data->set_status(MPI_SUCCESS);
 
             // return a future bound to the shared state
             using traits::future_access;
